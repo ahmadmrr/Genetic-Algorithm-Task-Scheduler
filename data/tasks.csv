@@ -1,0 +1,21 @@
+task_id,task,required_skill,hours
+T01,Train classifier,AI,4
+T02,Clean dataset,Python,3
+T03,Security audit,Security,5
+T04,Optimize SQL query,Database,2
+T05,Fix API endpoint,Backend,4
+T06,Analyze server logs,Linux,3
+T07,Build automation script,Python,2
+T08,Train prediction model,AI,5
+T09,Database backup task,Database,3
+T10,Vulnerability check,Security,4
+T11,Backend bug fix,Backend,3
+T12,Linux server setup,Linux,4
+T13,Data preprocessing,Python,3
+T14,Model evaluation,AI,2
+T15,Database indexing,Database,4
+T16,Authentication API,Backend,5
+T17,Security log review,Security,2
+T18,Python report generator,Python,4
+T19,Linux service configuration,Linux,3
+T20,AI feature experiment,AI,3
