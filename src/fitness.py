@@ -52,7 +52,43 @@ def overtime_cost(chromosome : list[int], employees : DataFrame, tasks : DataFra
     return cost
 
 
-def cost(population : list[list[int]], employees : DataFrame, tasks : DataFrame) -> list[int]:
+def imbalance_cost(
+    chromosome: list[int],
+    tasks: DataFrame,
+    employees_num: int
+) -> float:
+
+    """
+    Calculates the workload imbalance cost among employees.
+
+    The total assigned task hours for each employee are compared to the
+    average workload. Larger differences from the average produce a
+    higher penalty.
+
+    Args:
+        chromosome (list[int]): Employee index assigned to each task.
+        tasks (DataFrame): DataFrame containing task information and hours.
+        employees_num (int): Total number of employees.
+
+    Returns:
+        float: The workload imbalance cost.
+    """
+
+    hours_map = {i: 0 for i in range(employees_num)}
+
+    for task_index, employee_index in enumerate(chromosome):
+        hours_map[employee_index] += tasks.loc[task_index, "hours"]
+
+    avg_hours = sum(hours_map.values()) / len(hours_map)
+
+    cost = 0
+    for hours in hours_map.values():
+        cost += abs(hours - avg_hours) * 0.5
+
+    return cost
+
+
+def cost(population : list[list[int]], employees : DataFrame, tasks : DataFrame) -> list[float]:
 
     """    
     Calculate the total cost for a population of chromosomes.
@@ -70,8 +106,8 @@ def cost(population : list[list[int]], employees : DataFrame, tasks : DataFrame)
     for chromosome in population:
 
         skill_cost = skill_mismatch_cost(chromosome, employees.copy(), tasks.copy())
-        overtime = overtime_cost(chromosome, employees.copy(), tasks.copy())
-        costs.append(skill_cost + overtime)
+        overtime_cost = overtime_cost(chromosome, employees.copy(), tasks.copy())
+        imbalance_cost = imbalance_cost(chromosome, tasks.copy(), len(employees))
+        costs.append(skill_cost + overtime_cost + imbalance_cost)
     
-    return costs
-
+    return [costs, [skill_cost, overtime_cost, imbalance_cost]]
