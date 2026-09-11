@@ -1,21 +1,41 @@
-task_id,task,required_skill,hours
-T01,Train classifier,AI,4
-T02,Clean dataset,Python,3
-T03,Security audit,Security,5
-T04,Optimize SQL query,Database,2
-T05,Fix API endpoint,Backend,4
-T06,Analyze server logs,Linux,3
-T07,Build automation script,Python,2
-T08,Train prediction model,AI,5
-T09,Database backup task,Database,3
-T10,Vulnerability check,Security,4
-T11,Backend bug fix,Backend,3
-T12,Linux server setup,Linux,4
-T13,Data preprocessing,Python,3
-T14,Model evaluation,AI,2
-T15,Database indexing,Database,4
-T16,Authentication API,Backend,5
-T17,Security log review,Security,2
-T18,Python report generator,Python,4
-T19,Linux service configuration,Linux,3
-T20,AI feature experiment,AI,3
+task_id,task,required_skill,required_level,hours
+T01,Train classification model,AI,8,5
+T02,Clean customer dataset,Python,6,3
+T03,Perform security audit,Security,8,5
+T04,Optimize database queries,Database,8,4
+T05,Build authentication API,Backend,8,5
+T06,Configure Linux server,Linux,7,4
+T07,Create automation script,Python,7,3
+T08,Train recommendation model,AI,9,6
+T09,Design database schema,Database,8,5
+T10,Run vulnerability assessment,Security,9,5
+T11,Fix backend API bugs,Backend,6,3
+T12,Configure Linux services,Linux,7,3
+T13,Build data preprocessing pipeline,Python,8,5
+T14,Evaluate machine learning model,AI,7,3
+T15,Optimize database indexes,Database,7,4
+T16,Develop REST API,Backend,8,5
+T17,Review security logs,Security,6,3
+T18,Generate automated reports,Python,6,3
+T19,Configure server monitoring,Linux,8,4
+T20,Test AI feature prototype,AI,6,4
+T21,Implement database backup system,Database,7,4
+T22,Perform penetration testing,Security,9,6
+T23,Build user management API,Backend,7,4
+T24,Write data migration script,Python,8,4
+T25,Deploy Linux application server,Linux,9,5
+T26,Develop anomaly detection model,AI,8,5
+T27,Configure database replication,Database,9,5
+T28,Review authentication security,Security,8,4
+T29,Optimize backend performance,Backend,9,5
+T30,Build ETL automation script,Python,9,5
+T31,Configure Linux firewall,Linux,8,4
+T32,Tune machine learning model,AI,9,5
+T33,Analyze database performance,Database,7,3
+T34,Investigate security incident,Security,9,5
+T35,Implement caching service,Backend,8,4
+T36,Process application logs,Python,6,3
+T37,Automate Linux maintenance,Linux,7,4
+T38,Build prediction model,AI,8,5
+T39,Create database migration plan,Database,8,4
+T40,Implement API rate limiting,Backend,7,4
