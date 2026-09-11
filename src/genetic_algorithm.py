@@ -69,10 +69,6 @@ def genetic_algorithm(
 
         elite_indices = indices[:elite_size]
 
-        new_population = [
-            population[i]
-            for i in elite_indices
-        ]
 
         parent_indices = selection(
             costs[0],
@@ -85,13 +81,18 @@ def genetic_algorithm(
             for i in parent_indices
         ]
 
-        new_population += crossover(parents)
+        new_population = crossover(parents)
 
         new_population = mutate_population(
             new_population,
             mutation_rate,
             len(employees_data)
         )
+
+        new_population += [
+            population[i].copy()
+            for i in elite_indices
+        ]
 
         population = new_population
 

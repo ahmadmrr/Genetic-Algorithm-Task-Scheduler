@@ -2,6 +2,15 @@ from src import load_data, genetic_algorithm
 import matplotlib.pyplot as plt
 from time import perf_counter
 
+
+# Genetic algorithm parameters
+population_size = 100
+generations = 200
+mutation_rate = 5
+tournament_size = 3
+elite_size = 2
+
+
 if __name__ == "__main__":
 
     # Load employee and task datasets
@@ -35,13 +44,6 @@ if __name__ == "__main__":
 
         tasks_data.append(data)
 
-
-    # Genetic algorithm parameters
-    population_size = 100
-    generations = 200
-    mutation_rate = 5
-    tournament_size = 3
-    elite_size = 2
 
     start = perf_counter()
 
