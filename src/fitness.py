@@ -88,7 +88,7 @@ def imbalance_cost(
     return cost
 
 
-def cost(population : list[list[int]], employees : DataFrame, tasks : DataFrame) -> list[float]:
+def cost(population : list[list[int]], employees : DataFrame, tasks : DataFrame) -> list[list[float] | list[list[float]]]:
 
     """    
     Calculate the total cost for a population of chromosomes.
@@ -99,15 +99,22 @@ def cost(population : list[list[int]], employees : DataFrame, tasks : DataFrame)
         tasks (DataFrame): DataFrame containing task information.
             
     Returns:
-        list[int]: A list of total costs for each chromosome in the population."""
+        list[list[float] | list[list[float]]]: A list containing:
+            - A list of total costs for each chromosome.
+            - A list of detailed costs for each chromosome, where each
+              inner list contains the skill mismatch, overtime, and
+              workload imbalance costs."""
 
     costs = []
-
+    population_costs = []
+    population_detailed_costs = []
     for chromosome in population:
 
-        skill_cost = skill_mismatch_cost(chromosome, employees.copy(), tasks.copy())
-        overtime_cost = overtime_cost(chromosome, employees.copy(), tasks.copy())
-        imbalance_cost = imbalance_cost(chromosome, tasks.copy(), len(employees))
-        costs.append(skill_cost + overtime_cost + imbalance_cost)
+        skill_Cost = skill_mismatch_cost(chromosome, employees.copy(), tasks.copy())
+        overtime_Cost = overtime_cost(chromosome, employees.copy(), tasks.copy())
+        imbalance_Cost = imbalance_cost(chromosome, tasks.copy(), len(employees))
+
+        population_costs.append(skill_Cost + overtime_Cost + imbalance_Cost)
+        population_detailed_costs.append([skill_Cost, overtime_Cost, imbalance_Cost])
     
-    return [costs, [skill_cost, overtime_cost, imbalance_cost]]
+    return [population_costs, population_detailed_costs]

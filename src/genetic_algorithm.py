@@ -14,7 +14,7 @@ def genetic_algorithm(
         mutation_rate: int, 
         tournament_size: int, 
         elite_size: int
-        )-> tuple[list[list[int]], list[float]]:
+        )-> tuple[list[list[int]], list[list[float | list[float]]]]:
 
     """
     Runs the genetic algorithm to optimize task assignments among employees.
@@ -29,7 +29,10 @@ def genetic_algorithm(
         elite_size (int): Number of best chromosomes preserved between generations.
 
     Returns:
-        tuple[list[list[int]], list[float]]: The final population and the best cost from each generation.
+        tuple[list[list[int]], list[list[float | list[float]]]]:
+        The final population and the best cost information from each generation.
+        Each generation's cost contains the total cost followed by a list of
+        skill mismatch, overtime, and workload imbalance costs.
     """
 
     population = populate(population_size, tasks.shape[0], employees.shape[0])
@@ -38,14 +41,19 @@ def genetic_algorithm(
     for generation in range(generations):
 
         costs = cost(population, employees, tasks)
-        generations_best_costs.append(min(costs))
-        indices = list(range(len(costs)))
 
-        indices.sort(key=lambda i: costs[i], reverse=False)
+        best_index = costs[0].index(min(costs[0]))
+        generations_best_costs.append(
+            [costs[0][best_index], costs[1][best_index]]
+        )
+
+        indices = list(range(len(costs[0])))
+
+        indices.sort(key=lambda i: costs[0][i], reverse=False)
         elite_indices = indices[:elite_size]
         new_population = [population[i] for i in elite_indices]
 
-        new_population += crossover([population[i] for i in selection(costs, population_size - elite_size, tournament_size)])
+        new_population += crossover([population[i] for i in selection(costs[0], population_size - elite_size, tournament_size)])
         new_population = mutate_population(new_population, mutation_rate, employees.shape[0])
 
         population = new_population
