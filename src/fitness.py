@@ -1,120 +1,182 @@
-from pandas import DataFrame
+EmployeeData = dict[str, int]
+TaskData = dict[str, str | int]
 
 
-def skill_mismatch_cost(chromosome : list[int], employees : DataFrame, tasks : DataFrame) -> int:
-
+def skill_mismatch_cost(
+    chromosome: list[int],
+    employees_data: list[EmployeeData],
+    tasks_data: list[TaskData]
+) -> int:
     """
-    Calculate the skill mismatch cost for a given chromosome.
+    Calculate the skill mismatch cost for a chromosome.
+
+    A penalty is added whenever a task is assigned to an employee who
+    does not have the skill required by that task.
 
     Args:
-        chromosome (list[int]): The chromosome representing task assignments.
-        employees (DataFrame): DataFrame containing employee information.
-        tasks (DataFrame): DataFrame containing task information.
+        chromosome (list[int]): Employee index assigned to each task.
+        employees_data (list[EmployeeData]): Preprocessed employee data
+            containing employee skills and maximum working hours.
+        tasks_data (list[TaskData]): Preprocessed task data containing
+            required skills, required levels, and task hours.
 
     Returns:
-        int: The skill mismatch cost.
+        int: Total skill mismatch cost.
     """
 
     cost = 0
-    for i, j in enumerate(chromosome):
-        if tasks.loc[i, 'required_skill'] in employees.loc[j, 'skills']:
-            continue
-        else:
+
+    for task_index, employee_index in enumerate(chromosome):
+        required_skill = tasks_data[task_index]["required_skill"]
+
+        if required_skill not in employees_data[employee_index]:
             cost += 10
+
     return cost
 
 
-def overtime_cost(chromosome : list[int], employees : DataFrame, tasks : DataFrame) -> int:
-
+def overtime_cost(
+    chromosome: list[int],
+    employees_data: list[EmployeeData],
+    tasks_data: list[TaskData]
+) -> int:
     """
-    Calculate the overtime cost for a given chromosome.
+    Calculate the overtime cost for a chromosome.
+
+    The total task hours assigned to each employee are calculated.
+    Employees whose assigned hours exceed their maximum working hours
+    receive an overtime penalty.
 
     Args:
-        chromosome (list[int]): The chromosome representing task assignments.
-        employees (DataFrame): DataFrame containing employee information.
-        tasks (DataFrame): DataFrame containing task information.
+        chromosome (list[int]): Employee index assigned to each task.
+        employees_data (list[EmployeeData]): Preprocessed employee data
+            containing employee skills and maximum working hours.
+        tasks_data (list[TaskData]): Preprocessed task data containing
+            task hours and skill requirements.
 
     Returns:
-        int: The overtime cost.
+        int: Total overtime cost.
     """
 
     cost = 0
     hours_map = {}
-    for i, j in enumerate(chromosome):
-        if j not in hours_map.keys():
-            hours_map[j] = tasks.loc[i, 'hours']
-        else:
-            hours_map[j] += tasks.loc[i, 'hours']
 
-    for key, value in hours_map.items():
-        if value > employees.loc[key, 'max_hours']:
-            cost += (value - employees.loc[key, 'max_hours']) * 2
+    for task_index, employee_index in enumerate(chromosome):
+        if employee_index not in hours_map:
+            hours_map[employee_index] = tasks_data[task_index]["hours"]
+        else:
+            hours_map[employee_index] += tasks_data[task_index]["hours"]
+
+    for employee_id, hours_assigned in hours_map.items():
+        max_hours = employees_data[employee_id]["max_hours"]
+
+        if hours_assigned > max_hours:
+            cost += (hours_assigned - max_hours) * 2
+
     return cost
 
 
 def imbalance_cost(
     chromosome: list[int],
-    tasks: DataFrame,
+    tasks_data: list[TaskData],
     employees_num: int
 ) -> float:
-
     """
-    Calculates the workload imbalance cost among employees.
+    Calculate the workload imbalance cost among employees.
 
-    The total assigned task hours for each employee are compared to the
-    average workload. Larger differences from the average produce a
-    higher penalty.
+    The assigned task hours for each employee are compared with the
+    average workload. Greater deviations from the average produce a
+    higher imbalance penalty.
+
+    Employees with no assigned tasks are also included in the
+    calculation with zero assigned hours.
 
     Args:
         chromosome (list[int]): Employee index assigned to each task.
-        tasks (DataFrame): DataFrame containing task information and hours.
+        tasks_data (list[TaskData]): Preprocessed task data containing
+            task hours and skill requirements.
         employees_num (int): Total number of employees.
 
     Returns:
-        float: The workload imbalance cost.
+        float: Total workload imbalance cost.
     """
 
     hours_map = {i: 0 for i in range(employees_num)}
 
     for task_index, employee_index in enumerate(chromosome):
-        hours_map[employee_index] += tasks.loc[task_index, "hours"]
+        hours_map[employee_index] += tasks_data[task_index]["hours"]
 
     avg_hours = sum(hours_map.values()) / len(hours_map)
 
-    cost = 0
+    cost = 0.0
+
     for hours in hours_map.values():
         cost += abs(hours - avg_hours) * 0.5
 
     return cost
 
 
-def cost(population : list[list[int]], employees : DataFrame, tasks : DataFrame) -> list[list[float] | list[list[float]]]:
+def cost(
+    population: list[list[int]],
+    employees_data: list[EmployeeData],
+    tasks_data: list[TaskData]
+) -> list[list[float] | list[list[float]]]:
+    """
+    Calculate the costs for all chromosomes in a population.
 
-    """    
-    Calculate the total cost for a population of chromosomes.
-    
+    For each chromosome, the skill mismatch, overtime, and workload
+    imbalance costs are calculated. These individual costs are then
+    combined to produce the chromosome's total cost.
+
     Args:
-        population (list[list[int]]): A list of chromosomes representing task assignments.
-        employees (DataFrame): DataFrame containing employee information.
-        tasks (DataFrame): DataFrame containing task information.
-            
+        population (list[list[int]]): Population of chromosomes, where
+            each chromosome represents task-to-employee assignments.
+        employees_data (list[EmployeeData]): Preprocessed employee data
+            containing employee skills and maximum working hours.
+        tasks_data (list[TaskData]): Preprocessed task data containing
+            required skills, required levels, and task hours.
+
     Returns:
         list[list[float] | list[list[float]]]: A list containing:
-            - A list of total costs for each chromosome.
-            - A list of detailed costs for each chromosome, where each
-              inner list contains the skill mismatch, overtime, and
-              workload imbalance costs."""
+            - Total cost for each chromosome.
+            - Detailed costs for each chromosome in the order:
+              [skill mismatch, overtime, workload imbalance].
+    """
 
-    costs = []
     population_costs = []
     population_detailed_costs = []
+
     for chromosome in population:
+        skill_cost = skill_mismatch_cost(
+            chromosome,
+            employees_data,
+            tasks_data
+        )
 
-        skill_Cost = skill_mismatch_cost(chromosome, employees.copy(), tasks.copy())
-        overtime_Cost = overtime_cost(chromosome, employees.copy(), tasks.copy())
-        imbalance_Cost = imbalance_cost(chromosome, tasks.copy(), len(employees))
+        overtime_cost_value = overtime_cost(
+            chromosome,
+            employees_data,
+            tasks_data
+        )
 
-        population_costs.append(skill_Cost + overtime_Cost + imbalance_Cost)
-        population_detailed_costs.append([skill_Cost, overtime_Cost, imbalance_Cost])
-    
+        imbalance_cost_value = imbalance_cost(
+            chromosome,
+            tasks_data,
+            len(employees_data)
+        )
+
+        total_cost = (
+            skill_cost
+            + overtime_cost_value
+            + imbalance_cost_value
+        )
+
+        population_costs.append(total_cost)
+
+        population_detailed_costs.append([
+            skill_cost,
+            overtime_cost_value,
+            imbalance_cost_value
+        ])
+
     return [population_costs, population_detailed_costs]

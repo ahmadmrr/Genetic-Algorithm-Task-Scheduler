@@ -1,6 +1,6 @@
 from src import load_data, genetic_algorithm
 import matplotlib.pyplot as plt
-
+from time import perf_counter
 
 if __name__ == "__main__":
 
@@ -8,23 +8,57 @@ if __name__ == "__main__":
     employees = load_data("data/employees.csv")
     tasks = load_data("data/tasks.csv")
 
+    # Data Preprocessing
+
+    employees_data = []
+    for employee_id in range(employees.shape[0]):
+
+        data = {}
+        for skill in employees.loc[employee_id, 'skills'].split(','):
+
+            skill_name, level = skill.strip().split(":")
+            data[skill_name] = int(level)
+
+        data['max_hours'] = int(employees.loc[employee_id, "max_hours"])
+
+        employees_data.append(data)
+
+
+    tasks_data = []
+
+    for task_id in range(tasks.shape[0]):
+        data = {
+            "required_skill": tasks.loc[task_id, "required_skill"],
+            "required_level": int(tasks.loc[task_id, "required_level"]),
+            "hours": int(tasks.loc[task_id, "hours"])
+        }
+
+        tasks_data.append(data)
+
+
     # Genetic algorithm parameters
     population_size = 100
-    generations = 100
+    generations = 200
     mutation_rate = 5
-    tournament_size = 5
+    tournament_size = 3
     elite_size = 2
+
+    start = perf_counter()
 
     # Run the genetic algorithm
     best_population, generations_best_costs = genetic_algorithm(
-        employees.copy(),
-        tasks.copy(),
+        employees_data,
+        tasks_data,
         population_size,
         generations,
         mutation_rate,
         tournament_size,
         elite_size
     )
+
+    end = perf_counter()
+
+    print(f"Execution time: {end - start:.3f} seconds")
 
     # Find the generation with the lowest total cost
     best_generation = min(
