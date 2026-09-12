@@ -1,4 +1,9 @@
-# Genetic Algorithm Task Scheduler
+# Genetic Algorithm Task Scheduler 🧬
+
+![Python](https://img.shields.io/badge/Python-3.12-blue)
+![GitHub Tag](https://img.shields.io/github/v/tag/ahmadmrr/Genetic-Algorithm-Task-Scheduler)
+![License](https://img.shields.io/github/license/ahmadmrr/Genetic-Algorithm-Task-Scheduler)
+![Poetry](https://img.shields.io/badge/Dependencies-Poetry-blueviolet)
 
 A task scheduling system that uses a Genetic Algorithm to assign tasks to employees while minimizing scheduling conflicts and constraint violations.
 

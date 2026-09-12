@@ -1,4 +1,4 @@
-EmployeeData = dict[str, int]
+EmployeeData = dict[str, int | str]
 TaskData = dict[str, str | int]
 
 
@@ -116,6 +116,54 @@ def imbalance_cost(
     return cost
 
 
+def proficiency_cost(
+    chromosome: list[int],
+    employees_data: list[EmployeeData],
+    tasks_data: list[TaskData]
+) -> float:
+    """
+    Calculate the proficiency cost for a chromosome.
+
+    Employees with the required skill receive a penalty when their
+    proficiency level differs from the level required by the task.
+    Underqualification receives a larger penalty than overqualification.
+
+    Employees who do not have the required skill are ignored by this
+    function because they are handled separately by the skill mismatch cost.
+
+    Args:
+        chromosome (list[int]): Employee index assigned to each task.
+        employees_data (list[EmployeeData]): Preprocessed employee data
+            containing employee skills and proficiency levels.
+        tasks_data (list[TaskData]): Preprocessed task data containing
+            required skills and required proficiency levels.
+
+    Returns:
+        float: Total proficiency cost.
+    """
+
+    cost = 0.0
+
+    for task_id, employee_id in enumerate(chromosome):
+
+        required_skill = tasks_data[task_id]["required_skill"]
+
+        if required_skill in employees_data[employee_id]:
+
+            required_level = tasks_data[task_id]["required_level"]
+            employee_level = employees_data[employee_id][required_skill]
+
+            # Underqualification cost
+            if required_level > employee_level:
+                cost += (required_level - employee_level) * 0.5
+
+            # Overqualification cost
+            elif required_level < employee_level:
+                cost += (employee_level - required_level) * 0.1
+
+    return cost
+
+
 def cost(
     population: list[list[int]],
     employees_data: list[EmployeeData],
@@ -124,23 +172,24 @@ def cost(
     """
     Calculate the costs for all chromosomes in a population.
 
-    For each chromosome, the skill mismatch, overtime, and workload
-    imbalance costs are calculated. These individual costs are then
+    For each chromosome, the skill mismatch, overtime, workload imbalance,
+    and proficiency costs are calculated. These individual costs are then
     combined to produce the chromosome's total cost.
 
     Args:
         population (list[list[int]]): Population of chromosomes, where
             each chromosome represents task-to-employee assignments.
         employees_data (list[EmployeeData]): Preprocessed employee data
-            containing employee skills and maximum working hours.
+            containing employee skills, proficiency levels, and maximum
+            working hours.
         tasks_data (list[TaskData]): Preprocessed task data containing
-            required skills, required levels, and task hours.
+            required skills, required proficiency levels, and task hours.
 
     Returns:
         list[list[float] | list[list[float]]]: A list containing:
-            - Total cost for each chromosome.
-            - Detailed costs for each chromosome in the order:
-              [skill mismatch, overtime, workload imbalance].
+            - A list of total costs for each chromosome.
+            - A list of detailed costs for each chromosome in the order:
+              [skill mismatch, overtime, workload imbalance, proficiency].
     """
 
     population_costs = []
@@ -165,10 +214,17 @@ def cost(
             len(employees_data)
         )
 
+        proficiency_cost_value = proficiency_cost(
+            chromosome,
+            employees_data,
+            tasks_data
+        )
+
         total_cost = (
             skill_cost
             + overtime_cost_value
             + imbalance_cost_value
+            + proficiency_cost_value
         )
 
         population_costs.append(total_cost)
@@ -176,7 +232,8 @@ def cost(
         population_detailed_costs.append([
             skill_cost,
             overtime_cost_value,
-            imbalance_cost_value
+            imbalance_cost_value,
+            proficiency_cost_value
         ])
 
     return [population_costs, population_detailed_costs]
