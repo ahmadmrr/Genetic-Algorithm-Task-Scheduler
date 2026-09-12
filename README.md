@@ -5,31 +5,39 @@
 ![License](https://img.shields.io/github/license/ahmadmrr/Genetic-Algorithm-Task-Scheduler)
 ![Poetry](https://img.shields.io/badge/Dependencies-Poetry-blueviolet)
 
-A task scheduling system that uses a Genetic Algorithm to assign tasks to employees while minimizing scheduling conflicts and constraint violations.
+A task scheduling system that uses a Genetic Algorithm to assign tasks to employees while minimizing scheduling conflicts, workload imbalance, and skill-related penalties.
 
 ## About the Project
 
-Assigning tasks to employees can become difficult when multiple constraints need to be considered at the same time. For example, an employee may not have the required skill for a task, assigning too many tasks to one employee may exceed their maximum working hours, or the workload may be distributed unevenly among employees.
+Assigning tasks to employees can become difficult when multiple constraints need to be considered at the same time.
+
+For example:
+
+- An employee may not have the required skill for a task.
+- An employee may not have the required proficiency level.
+- Assigning too many tasks to one employee may exceed their maximum working hours.
+- The workload may be distributed unevenly between employees.
 
 This project uses a **Genetic Algorithm (GA)** to search for good task assignments instead of checking every possible schedule.
 
-The algorithm currently tries to minimize:
+The algorithm currently minimizes:
 
-* Skill mismatches between employees and tasks.
-* Employee overtime.
-* Workload imbalance between employees.
+- Skill mismatches.
+- Employee overtime.
+- Workload imbalance.
+- Skill proficiency differences.
 
-The project was built from scratch in Python to better understand how Genetic Algorithms can be applied to optimization problems.
+The project was built from scratch in Python to better understand how Genetic Algorithms can be applied to optimization and scheduling problems.
 
 ## How It Works
 
 Each possible schedule is represented as a **chromosome**.
 
-Every position in the chromosome represents a task, and the value stored at that position represents the employee assigned to that task.
+Every position in the chromosome represents a task, while the value stored at that position represents the employee assigned to that task.
 
 For example:
 
-```text id="cqsm74"
+```text
 Chromosome:
 
 [2, 0, 4, 1]
@@ -44,29 +52,59 @@ A population contains multiple chromosomes representing different possible sched
 
 The Genetic Algorithm improves these schedules over multiple generations using:
 
-1. **Tournament Selection** — selects better schedules for reproduction.
-2. **One-Point Crossover** — combines assignments from two parent schedules.
-3. **Mutation** — randomly changes some employee assignments to maintain diversity.
-4. **Elitism** — preserves the best schedules between generations.
+1. **Tournament Selection** - selects better schedules for reproduction.
+2. **One-Point Crossover** - combines assignments from two parent schedules.
+3. **Mutation** - randomly changes some employee assignments to maintain diversity.
+4. **Elitism** - preserves the best schedules between generations.
 
 ## Cost Function
 
-Each chromosome is evaluated using a cost function consisting of three constraints.
+Each chromosome is evaluated using four cost components.
 
 ### Skill Mismatch
 
 If an employee is assigned to a task without the required skill, a penalty is added to the schedule's cost.
 
-```text id="9k9m2a"
-Skill mismatch = +10 cost
+```text
+Skill Mismatch Cost = +10
 ```
+
+Missing skills are handled separately from proficiency differences because assigning an employee without the required skill is considered a larger scheduling error.
+
+### Proficiency Cost
+
+Employees and tasks have proficiency levels from **1 to 10**.
+
+If an employee has the required skill but their proficiency level differs from the task requirement, a penalty is applied.
+
+#### Underqualification
+
+If the employee's proficiency level is lower than the required level:
+
+```text
+Underqualification Cost =
+(required level - employee level) × 0.5
+```
+
+#### Overqualification
+
+If the employee's proficiency level is higher than the required level:
+
+```text
+Overqualification Cost =
+(employee level - required level) × 0.1
+```
+
+Underqualification receives a larger penalty than overqualification.
+
+The smaller overqualification penalty encourages the scheduler to avoid unnecessarily assigning highly skilled employees to easier tasks while still allowing such assignments when they improve the overall schedule.
 
 ### Overtime
 
-If the total hours assigned to an employee exceed their maximum working hours, a penalty is added for each overtime hour.
+If the total number of hours assigned to an employee exceeds their maximum working hours, a penalty is added for every overtime hour.
 
-```text id="91ilnw"
-Overtime cost = overtime hours × penalty
+```text
+Overtime Cost = Overtime Hours × 2
 ```
 
 ### Workload Imbalance
@@ -75,29 +113,66 @@ The workload of each employee is compared with the average workload across all e
 
 Larger differences from the average workload result in a higher imbalance penalty.
 
-```text id="h8ayyd"
-Imbalance cost = Σ |employee hours - average hours| × 0.5
+```text
+Imbalance Cost = Σ |Employee Hours - Average Hours| × 0.5
+```
+
+### Total Cost
+
+The final chromosome cost is calculated as:
+
+```text
+Total Cost =
+Skill Mismatch Cost
++ Overtime Cost
++ Workload Imbalance Cost
++ Proficiency Cost
 ```
 
 The Genetic Algorithm attempts to **minimize the total cost**.
 
-```text id="qugoyn"
-Total Cost = Skill Mismatch Cost + Overtime Cost + Imbalance Cost
+A lower cost represents a better schedule.
+
+## Performance Optimization
+
+Earlier versions of the project repeatedly accessed Pandas DataFrames during fitness evaluation.
+
+Because the fitness function is executed thousands of times during a Genetic Algorithm run, repeated DataFrame access created a significant performance bottleneck.
+
+In v2.0, employee and task data are preprocessed once before the Genetic Algorithm begins.
+
+```text
+CSV / Pandas
+     ↓
+Data Preprocessing
+     ↓
+Python Lists and Dictionaries
+     ↓
+Genetic Algorithm
 ```
 
-A lower cost represents a better schedule. A cost of `0` means that all current constraints have been satisfied and the workload is perfectly balanced.
+The Genetic Algorithm therefore performs its repeated cost calculations using lightweight Python data structures instead of repeatedly accessing Pandas DataFrames.
+
+Example performance improvement:
+
+```text
+Before Optimization: ~67 seconds
+After Optimization:  ~1 second
+```
+
+Execution time may vary depending on hardware and Genetic Algorithm parameters.
 
 ## Project Structure
 
-```text id="mb23tv"
-genetic-scheduler/
+```text
+Genetic-Algorithm-Task-Scheduler/
+│
 ├── data/
 │   ├── employees.csv
 │   └── tasks.csv
 │
 ├── results/
-│   ├── run1.png
-│   └── run2.png
+│   ├── schedule_summary.txt
 │
 ├── src/
 │   ├── data_loader.py
@@ -106,6 +181,7 @@ genetic-scheduler/
 │   ├── selection.py
 │   ├── crossover.py
 │   ├── mutation.py
+│   ├── report.py
 │   └── genetic_algorithm.py
 │
 ├── main.py
@@ -117,10 +193,54 @@ genetic-scheduler/
 
 ## Dataset
 
-The dataset is divided into two CSV files:
+The project uses two CSV files.
 
-* `employees.csv`: Contains information about the employees, including their ID, name, skills, and maximum working hours.
-* `tasks.csv`: Contains the tasks that need to be assigned, including the task ID, task name, required skill, and estimated working hours.
+### employees.csv
+
+Contains employee information including:
+
+- Employee ID.
+- Employee name.
+- Skills.
+- Skill proficiency levels.
+- Maximum working hours.
+
+Example:
+
+```csv
+employee_id,name,skills,max_hours
+0,Ahmad,"Python:9,AI:7",16
+1,Sara,"Python:7,Database:9",16
+```
+
+Each employee may have multiple skills, with every skill containing a proficiency level from **1 to 10**.
+
+### tasks.csv
+
+Contains information about the tasks that need to be assigned.
+
+Each task includes:
+
+- Task ID.
+- Task name.
+- Required skill.
+- Required proficiency level.
+- Estimated working hours.
+
+Example:
+
+```csv
+task_id,task,required_skill,required_level,hours
+T01,Train classification model,AI,8,5
+T02,Clean customer dataset,Python,6,3
+```
+
+The current dataset contains:
+
+```text
+20 Employees
+40 Tasks
+```
 
 ## Running the Project
 
@@ -130,12 +250,13 @@ The project uses [Poetry](https://python-poetry.org/) for dependency management.
 
 ```bash
 git clone https://github.com/ahmadmrr/Genetic-Algorithm-Task-Scheduler.git
+
 cd Genetic-Algorithm-Task-Scheduler
 ```
 
 ### Install Dependencies
 
-Make sure Poetry is installed, then install the project dependencies:
+Make sure Poetry is installed, then run:
 
 ```bash
 poetry install
@@ -149,78 +270,119 @@ poetry run python main.py
 
 ## Genetic Algorithm Parameters
 
-| Parameter       | Description                                             |
-| --------------- | ------------------------------------------------------- |
-| Population Size | Number of chromosomes in each generation                |
-| Generations     | Number of generations                                   |
-| Mutation Rate   | Probability of mutating each gene                       |
-| Tournament Size | Number of chromosomes competing in tournament selection |
-| Elite Size      | Number of best chromosomes preserved unchanged          |
+| Parameter | Description |
+| --- | --- |
+| Population Size | Number of chromosomes in each generation |
+| Generations | Number of generations executed |
+| Mutation Rate | Probability of mutating each gene |
+| Tournament Size | Number of chromosomes competing during tournament selection |
+| Elite Size | Number of best chromosomes preserved unchanged |
+
+## Generated Report
+
+After the Genetic Algorithm finishes, the best chromosome is used to generate:
+
+```text
+results/schedule_summary.txt
+```
+
+The report contains:
+
+- Overall cost breakdown.
+- Employee workload summary.
+- Number of tasks assigned to each employee.
+- Remaining available hours.
+- Task assignment summary.
+- Required skill.
+- Required proficiency level.
+- Assigned employee proficiency level.
+
+### Employee Workload Summary
+
+Example:
+
+```text
+ID      Employee            Tasks     Workload       Max Hours   Remaining
+-------------------------------------------------------------------------------------
+0       Ahmad               3         14             16          2
+1       Sara                2         11             16          5
+2       Omar                4         16             16          0
+```
+
+### Task Assignment Summary
+
+Example:
+
+```text
+Task ID   Task                            Employee            Skill          Req Lv    Emp Lv    Hours
+--------------------------------------------------------------------------------------------------------------
+T01       Train classification model      Khaled              AI             8         8         5
+T02       Clean customer dataset          Ahmad               Python         6         9         3
+```
+
+This allows the complete schedule to be inspected without printing all task assignments directly to the terminal.
 
 ## Visualization
 
 The algorithm tracks the best chromosome found in each generation.
 
-For the best chromosome, the following costs are recorded:
+For every generation, the following values are recorded:
 
-* Total cost
-* Skill mismatch cost
-* Overtime cost
-* Workload imbalance cost
+- Total cost.
+- Skill mismatch cost.
+- Overtime cost.
+- Workload imbalance cost.
+- Proficiency cost.
 
-These values are plotted across generations to show how the solution improves during the evolutionary process and how each constraint contributes to the total cost.
+These values are plotted across generations to show how the solution improves during the evolutionary process and how each constraint contributes to the final cost.
 
 ## Results
 
-The following runs demonstrate the behavior of the Genetic Algorithm using different parameter configurations.
+Because Genetic Algorithms use random selection, crossover, and mutation, different runs may produce different results even when using the same parameters.
 
-Because Genetic Algorithms contain random operations, individual runs may produce different results even when using the same parameters. These runs are intended as examples of the algorithm's behavior rather than a statistical comparison between parameter configurations.
+The following result is an example of the algorithm's behavior.
 
-### Run 1
+### Example Run
 
-**Parameters**
+#### Parameters
 
 | Parameter | Value |
 | --- | ---: |
 | Population Size | 100 |
-| Generations | 100 |
+| Generations | 200 |
 | Mutation Rate | 5% |
-| Tournament Size | 3 |
+| Tournament Size | 5 |
 | Elite Size | 2 |
 
-**Best Result**
+#### Best Result
 
-- Best generation: **68**
-- Total cost: **2.4**
-- Skill mismatch cost: **0**
-- Overtime cost: **0**
-- Workload imbalance cost: **2.4**
+```text
+Generation 197: 
 
+Total Cost = 19.2, 
+Skill Mismatch Cost = 0, 
+Overtime Cost = 0, 
+Imbalance Cost = 9.0, 
+Proficiency Cost = 10.2
+```
 
-![Run 1 convergence](results/run1.png)
+The resulting schedule contained:
 
-### Run 2
+- No employees assigned to tasks without the required skill.
+- No employee overtime.
+- A relatively balanced workload distribution.
+- Remaining cost caused mainly by differences between employee proficiency levels and task requirements.
 
-**Parameters**
+Example execution time:
 
-| Parameter | Value |
-| --- | ---: |
-| Population Size | 100 |
-| Generations | 100 |
-| Mutation Rate | 2% |
-| Tournament Size | 7 |
-| Elite Size | 2 |
+```text
+Execution time: 1.327 seconds
+```
 
-**Best Result**
-
-- Best generation: **71**
-- Total cost: **4.2**
-- Skill mismatch cost: **0**
-- Overtime cost: **0**
-- Workload imbalance cost: **4.2**
-
-![Run 2 convergence](results/run2.png)
+Execution time and final cost may vary between runs because of the stochastic nature of Genetic Algorithms.
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+This project is licensed under the MIT License.
+
+See the `LICENSE` file for details.
