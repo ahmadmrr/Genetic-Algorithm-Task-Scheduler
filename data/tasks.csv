@@ -1,41 +1,71 @@
-task_id,task,required_skill,required_level,hours
-T01,Train classification model,AI,8,5
-T02,Clean customer dataset,Python,6,3
-T03,Perform security audit,Security,8,5
-T04,Optimize database queries,Database,8,4
-T05,Build authentication API,Backend,8,5
-T06,Configure Linux server,Linux,7,4
-T07,Create automation script,Python,7,3
-T08,Train recommendation model,AI,9,6
-T09,Design database schema,Database,8,5
-T10,Run vulnerability assessment,Security,9,5
-T11,Fix backend API bugs,Backend,6,3
-T12,Configure Linux services,Linux,7,3
-T13,Build data preprocessing pipeline,Python,8,5
-T14,Evaluate machine learning model,AI,7,3
-T15,Optimize database indexes,Database,7,4
-T16,Develop REST API,Backend,8,5
-T17,Review security logs,Security,6,3
-T18,Generate automated reports,Python,6,3
-T19,Configure server monitoring,Linux,8,4
-T20,Test AI feature prototype,AI,6,4
-T21,Implement database backup system,Database,7,4
-T22,Perform penetration testing,Security,9,6
-T23,Build user management API,Backend,7,4
-T24,Write data migration script,Python,8,4
-T25,Deploy Linux application server,Linux,9,5
-T26,Develop anomaly detection model,AI,8,5
-T27,Configure database replication,Database,9,5
-T28,Review authentication security,Security,8,4
-T29,Optimize backend performance,Backend,9,5
-T30,Build ETL automation script,Python,9,5
-T31,Configure Linux firewall,Linux,8,4
-T32,Tune machine learning model,AI,9,5
-T33,Analyze database performance,Database,7,3
-T34,Investigate security incident,Security,9,5
-T35,Implement caching service,Backend,8,4
-T36,Process application logs,Python,6,3
-T37,Automate Linux maintenance,Linux,7,4
-T38,Build prediction model,AI,8,5
-T39,Create database migration plan,Database,8,4
-T40,Implement API rate limiting,Backend,7,4
+task_id,task,required_skills,hours,priority
+T01,Train classification model,"AI:8,Python:7",5,3
+T02,Clean customer dataset,"Python:6",3,2
+T03,Perform security audit,"Security:8,Linux:6",5,4
+T04,Optimize database queries,"Database:8,Python:5",4,3
+T05,Build authentication API,"Backend:8,Security:7",5,4
+T06,Configure Linux server,"Linux:7,Security:5",4,3
+T07,Create automation script,"Python:7,Linux:5",3,2
+T08,Train recommendation model,"AI:9,Python:8",6,3
+T09,Design database schema,"Database:8,Backend:6",5,3
+T10,Run vulnerability assessment,"Security:9,Linux:7",5,4
+T11,Fix backend API bugs,"Backend:6,Python:5",3,3
+T12,Configure Linux services,"Linux:7",3,2
+T13,Build data preprocessing pipeline,"Python:8,Database:6",5,3
+T14,Evaluate machine learning model,"AI:7,Python:6",3,2
+T15,Optimize database indexes,"Database:7",4,2
+T16,Develop REST API,"Backend:8,Python:6",5,3
+T17,Review security logs,"Security:6,Linux:5",3,3
+T18,Generate automated reports,"Python:6,Database:5",3,1
+T19,Configure server monitoring,"Linux:8,Security:6",4,3
+T20,Test AI feature prototype,"AI:6,Python:5",4,2
+T21,Implement database backup system,"Database:7,Linux:6",4,4
+T22,Perform penetration testing,"Security:9,Linux:7,Python:5",6,4
+T23,Build user management API,"Backend:7,Database:6",4,3
+T24,Write data migration script,"Python:8,Database:7",4,3
+T25,Deploy Linux application server,"Linux:9,Backend:6",5,4
+T26,Develop anomaly detection model,"AI:8,Python:8",5,3
+T27,Configure database replication,"Database:9,Linux:7",5,4
+T28,Review authentication security,"Security:8,Backend:6",4,4
+T29,Optimize backend performance,"Backend:9,Python:7",5,3
+T30,Build ETL automation script,"Python:9,Database:7",5,3
+T31,Configure Linux firewall,"Linux:8,Security:8",4,4
+T32,Tune machine learning model,"AI:9,Python:8",5,3
+T33,Analyze database performance,"Database:7,Python:5",3,2
+T34,Investigate security incident,"Security:9,Linux:6",5,4
+T35,Implement caching service,"Backend:8,Database:6",4,2
+T36,Process application logs,"Python:6,Linux:5",3,2
+T37,Automate Linux maintenance,"Linux:7,Python:6",4,2
+T38,Build prediction model,"AI:8,Python:7",5,3
+T39,Create database migration plan,"Database:8,Backend:5",4,2
+T40,Implement API rate limiting,"Backend:7,Security:6",4,4
+T41,Build fraud detection model,"AI:9,Python:8,Database:6",6,4
+T42,Develop secure file upload API,"Backend:8,Security:8,Python:6",5,4
+T43,Analyze application vulnerabilities,"Security:8,Python:6",4,4
+T44,Configure container host,"Linux:8,Security:6,Backend:5",4,3
+T45,Build customer analytics pipeline,"Python:8,Database:8,AI:6",6,3
+T46,Optimize model inference service,"AI:8,Backend:7,Python:7",5,3
+T47,Implement database access layer,"Database:8,Backend:8,Python:5",5,3
+T48,Secure database connections,"Security:7,Database:7,Backend:5",4,4
+T49,Automate server deployment,"Linux:8,Python:7,Backend:6",5,3
+T50,Develop threat detection system,"Security:9,AI:7,Python:7",6,4
+T51,Build model monitoring service,"AI:7,Backend:7,Python:6",5,3
+T52,Perform database security review,"Database:7,Security:8",4,4
+T53,Create log analysis pipeline,"Python:8,Linux:6,Security:6",5,3
+T54,Implement backend load balancing,"Backend:8,Linux:7",5,3
+T55,Train image classification model,"AI:9,Python:9",6,3
+T56,Configure intrusion detection system,"Security:9,Linux:8",5,4
+T57,Develop database reporting API,"Database:8,Backend:7,Python:6",5,2
+T58,Build automated security scanner,"Security:8,Python:8,Linux:6",6,4
+T59,Deploy machine learning service,"AI:8,Backend:8,Python:6",6,4
+T60,Build secure analytics platform,"Database:8,AI:7,Python:6",7,4
+T61,Build incident response dashboard,"Security:7,Backend:7,Database:6",5,3
+T62,Create AI data validation service,"AI:7,Python:8,Database:6",5,3
+T63,Automate database maintenance,"Database:8,Python:7,Linux:6",5,2
+T64,Develop secure backend gateway,"Backend:9,Security:8,Linux:5",6,4
+T65,Analyze network security logs,"Security:8,Linux:7,Python:6",5,4
+T66,Build AI inference API,"AI:8,Backend:8,Python:7",6,3
+T67,Configure production database server,"Database:8,Linux:8,Security:5",5,4
+T68,Create automated deployment tool,"Python:8,Linux:8,Backend:6",5,3
+T69,Build risk prediction system,"AI:8,Python:8,Database:6",6,3
+T70,Develop security monitoring API,"Security:8,Backend:7,Python:6",5,4
