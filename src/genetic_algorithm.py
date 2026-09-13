@@ -12,6 +12,7 @@ def genetic_algorithm(
     generations: int,
     mutation_rate: int,
     tournament_size: int,
+    crossover_type : str,
     elite_size: int
 ) -> tuple[
     list[list[int]],
@@ -89,7 +90,7 @@ def genetic_algorithm(
             for i in parent_indices
         ]
 
-        new_population = crossover(parents)
+        new_population = crossover(parents, crossover_type)
 
         new_population = mutate_population(
             new_population,

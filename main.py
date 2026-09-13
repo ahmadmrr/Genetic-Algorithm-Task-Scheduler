@@ -9,7 +9,7 @@ generations = 200
 mutation_rate = 5
 tournament_size = 5
 elite_size = 2
-
+crossover_type = "uniform"
 
 if __name__ == "__main__":
 
@@ -58,6 +58,7 @@ if __name__ == "__main__":
         generations,
         mutation_rate,
         tournament_size,
+        crossover_type,
         elite_size
     )
 
