@@ -1,4 +1,4 @@
-from src import load_data, genetic_algorithm, generate_report
+from src import load_data, genetic_algorithm, preprocess_employees, preprocess_tasks, generate_report
 import matplotlib.pyplot as plt
 from time import perf_counter
 
@@ -11,42 +11,18 @@ tournament_size = 5
 elite_size = 2
 crossover_type = "uniform"
 
+
 if __name__ == "__main__":
+
 
     # Load employee and task datasets
     employees = load_data("data/employees.csv")
     tasks = load_data("data/tasks.csv")
 
     # Data Preprocessing
-
-    employees_data = []
-    for employee_id in range(employees.shape[0]):
-
-        data = {}
-        for skill in employees.loc[employee_id, 'skills'].split(','):
-
-            skill_name, level = skill.strip().split(":")
-            data[skill_name] = int(level)
-
-        data['max_hours'] = int(employees.loc[employee_id, "max_hours"])
-        data["name"] = employees.loc[employee_id, 'name']
-
-        employees_data.append(data)
-
-
-    tasks_data = []
-
-    for task_id in range(tasks.shape[0]):
-        data = {
-            "task_id": tasks.loc[task_id, "task_id"],
-            "task": tasks.loc[task_id, "task"],
-            "required_skill": tasks.loc[task_id, "required_skill"],
-            "required_level": int(tasks.loc[task_id, "required_level"]),
-            "hours": int(tasks.loc[task_id, "hours"])
-        }
-
-        tasks_data.append(data)
-
+    employees_data = preprocess_employees(employees)
+    tasks_data = preprocess_tasks(tasks)
+    
 
     start = perf_counter()
 
