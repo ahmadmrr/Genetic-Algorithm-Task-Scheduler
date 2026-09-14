@@ -111,6 +111,8 @@ def crossover(
 
     Parent chromosomes are processed in pairs. The specified crossover
     operator is applied to each pair to produce two child chromosomes.
+    If the population size is odd, the final unpaired chromosome is copied
+    directly to the new population without crossover.
 
     Supported crossover types:
         - "one_point"
@@ -122,12 +124,12 @@ def crossover(
         crossover_type (str): Crossover operator to apply.
 
     Returns:
-        list[list[int]]: Population of child chromosomes.
+        list[list[int]]: Population of child chromosomes with the same
+            size as the parent population.
 
     Raises:
         ValueError: If the specified crossover type is not supported.
     """
-
     operators = {
         "one_point": one_point_crossover,
         "two_points": two_points_crossover,
@@ -143,7 +145,8 @@ def crossover(
 
     new_population = []
 
-    for i in range(0, len(population), 2):
+    for i in range(0, len(population) - 1, 2):
+
         child1, child2 = operator(
             population[i],
             population[i + 1]
@@ -151,5 +154,10 @@ def crossover(
 
         new_population.append(child1)
         new_population.append(child2)
+
+    if len(population) % 2 != 0:
+        new_population.append(
+            population[-1].copy()
+        )
 
     return new_population
