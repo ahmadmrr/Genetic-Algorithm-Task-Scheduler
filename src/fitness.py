@@ -1,7 +1,7 @@
 from src.preprocessing import EmployeeData, TaskData
+from src.config import load_config
 
-# EmployeeData = dict[str, int | str]
-# TaskData = dict[str, str | int]
+fitness_config = load_config("fitness.toml")
 
 
 def skill_mismatch_cost(
@@ -35,7 +35,7 @@ def skill_mismatch_cost(
         for required_skill in tasks_data[task_index]["required_skills"]:
 
             if required_skill not in employees_data[employee_index]:
-                cost += 50
+                cost += fitness_config["skill"]["mismatch_penalty"]
 
     return cost
 
@@ -77,7 +77,7 @@ def overtime_cost(
         available_hours = employees_data[employee_id]["available_hours"]
 
         if hours_assigned > available_hours:
-            cost += (hours_assigned - available_hours) * 2
+            cost += (hours_assigned - available_hours) * fitness_config["overtime"]["penalty"]
 
     return cost
 
@@ -117,7 +117,7 @@ def imbalance_cost(
     cost = 0.0
 
     for hours in hours_map.values():
-        cost += abs(hours - avg_hours) * 0.5
+        cost += abs(hours - avg_hours) * fitness_config["workload_imbalance"]["weight"]
 
     return cost
 
@@ -164,11 +164,15 @@ def proficiency_cost(
 
                 # Underqualification cost
                 if required_level > employee_level:
-                    cost += (required_level - employee_level) * 0.5
+                    cost += (
+                        required_level - employee_level
+                    ) * fitness_config["proficiency"]["underqualification_penalty"]
 
                 # Overqualification cost
                 elif required_level < employee_level:
-                    cost += (employee_level - required_level) * 0.1
+                    cost += (
+                        employee_level - required_level
+                    ) * fitness_config["proficiency"]["overqualification_penalty"]
 
     return cost
 
@@ -224,15 +228,17 @@ def priority_cost(
 
     for employee_priority_load in employees_priority_load.values():
 
+        # over average cost
         if employee_priority_load > avg_priority_load:
             cost += (
                 employee_priority_load - avg_priority_load
-            ) * 0.5
+            ) * fitness_config["priority"]["over_average_weight"]
 
+        # under average cost
         elif employee_priority_load < avg_priority_load:
             cost += (
                 avg_priority_load - employee_priority_load
-            ) * 0.1
+            ) * fitness_config["priority"]["under_average_weight"]
 
     return cost
 

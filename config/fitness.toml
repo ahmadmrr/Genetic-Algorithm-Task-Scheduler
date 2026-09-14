@@ -1,0 +1,16 @@
+[skill]
+mismatch_penalty = 50
+
+[overtime]
+penalty = 2
+
+[workload_imbalance]
+weight = 0.5
+
+[proficiency]
+underqualification_penalty = 0.5
+overqualification_penalty = 0.1
+
+[priority]
+over_average_weight = 0.5
+under_average_weight = 0.1

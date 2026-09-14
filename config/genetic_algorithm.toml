@@ -1,0 +1,6 @@
+population_size = 200
+generations = 500
+mutation_rate = 5
+tournament_size = 7
+elite_size = 4
+crossover_type = "uniform"

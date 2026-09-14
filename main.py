@@ -1,15 +1,19 @@
 from src import load_data, genetic_algorithm, preprocess_employees, preprocess_tasks, generate_report
 import matplotlib.pyplot as plt
 from time import perf_counter
+from src.config import load_config
+
+
+ga_config = load_config("genetic_algorithm.toml")
 
 
 # Genetic algorithm parameters
-population_size = 100
-generations = 200
-mutation_rate = 5
-tournament_size = 5
-elite_size = 2
-crossover_type = "uniform"
+population_size = ga_config["population_size"]
+generations = ga_config["generations"]
+mutation_rate = ga_config["mutation_rate"]
+tournament_size = ga_config["tournament_size"]
+elite_size = ga_config["elite_size"]
+crossover_type = ga_config["crossover_type"]
 
 
 if __name__ == "__main__":
@@ -70,6 +74,7 @@ if __name__ == "__main__":
         f"Overtime Cost = {detailed_costs[1]}, \n"
         f"Imbalance Cost = {detailed_costs[2]}, \n"
         f"Proficiency Cost = {detailed_costs[3]}\n"
+        f"Priority Cost = {detailed_costs[4]}\n"
         "------------------------------ \n"
         f"Chromosome = {best_chromosome}"
     )
@@ -81,12 +86,14 @@ if __name__ == "__main__":
     overtime_costs = [cost[1][1] for cost in generations_best_costs]
     imbalance_costs = [cost[1][2] for cost in generations_best_costs]
     proficiency_costs = [cost[1][3] for cost in generations_best_costs]
+    priority_costs = [cost[1][4] for cost in generations_best_costs]
 
     plt.plot(total_costs, label="Total Cost")
     plt.plot(skill_costs, label="Skill Cost")
     plt.plot(overtime_costs, label="Overtime Cost")
     plt.plot(imbalance_costs, label="Imbalance Cost")
     plt.plot(proficiency_costs, label="Proficiency Cost")
+    plt.plot(priority_costs, label="Priority Cost")
 
     plt.xlabel("Generation")
     plt.ylabel("Cost")
