@@ -1,5 +1,4 @@
-from src import load_data, genetic_algorithm, preprocess_employees, preprocess_tasks, generate_report
-import matplotlib.pyplot as plt
+from src import load_data, genetic_algorithm, preprocess_employees, preprocess_tasks, generate_report, plot_total_cost, plot_cost_components, plot_all_costs
 from time import perf_counter
 from src.config import load_config
 
@@ -67,37 +66,21 @@ if __name__ == "__main__":
     )
 
     print(
-        f"Generation {best_generation}: \n"
-        "------------------------------ \n"
-        f"Total Cost = {best_cost}, \n"
-        f"Skill Mismatch Cost = {detailed_costs[0]}, \n"
-        f"Overtime Cost = {detailed_costs[1]}, \n"
-        f"Imbalance Cost = {detailed_costs[2]}, \n"
-        f"Proficiency Cost = {detailed_costs[3]}\n"
-        f"Priority Cost = {detailed_costs[4]}\n"
-        "------------------------------ \n"
-        f"Chromosome = {best_chromosome}"
+        f"\nGeneration {best_generation}\n"
+        f"{'-' * 30}\n"
+        f"Total Cost:          {best_cost:.2f}\n"
+        f"Skill Mismatch Cost: {detailed_costs[0]:.2f}\n"
+        f"Overtime Cost:       {detailed_costs[1]:.2f}\n"
+        f"Imbalance Cost:      {detailed_costs[2]:.2f}\n"
+        f"Proficiency Cost:    {detailed_costs[3]:.2f}\n"
+        f"Priority Cost:       {detailed_costs[4]:.2f}\n"
+        f"{'-' * 30}"
     )
 
+    plot_total_cost(
+        generations_best_costs
+    )
 
-
-    total_costs = [cost[0] for cost in generations_best_costs]
-    skill_costs = [cost[1][0] for cost in generations_best_costs]
-    overtime_costs = [cost[1][1] for cost in generations_best_costs]
-    imbalance_costs = [cost[1][2] for cost in generations_best_costs]
-    proficiency_costs = [cost[1][3] for cost in generations_best_costs]
-    priority_costs = [cost[1][4] for cost in generations_best_costs]
-
-    plt.plot(total_costs, label="Total Cost")
-    plt.plot(skill_costs, label="Skill Cost")
-    plt.plot(overtime_costs, label="Overtime Cost")
-    plt.plot(imbalance_costs, label="Imbalance Cost")
-    plt.plot(proficiency_costs, label="Proficiency Cost")
-    plt.plot(priority_costs, label="Priority Cost")
-
-    plt.xlabel("Generation")
-    plt.ylabel("Cost")
-    plt.title("Genetic Algorithm Performance")
-    plt.legend()
-    plt.show()
-
+    plot_cost_components(
+        generations_best_costs
+    )
