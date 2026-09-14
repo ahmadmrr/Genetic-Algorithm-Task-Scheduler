@@ -1,5 +1,7 @@
-EmployeeData = dict[str, int | str]
-TaskData = dict[str, str | int]
+from src.preprocessing import EmployeeData, TaskData
+
+# EmployeeData = dict[str, int | str]
+# TaskData = dict[str, str | int]
 
 
 def skill_mismatch_cost(
@@ -10,27 +12,30 @@ def skill_mismatch_cost(
     """
     Calculate the skill mismatch cost for a chromosome.
 
-    A penalty is added whenever a task is assigned to an employee who
-    does not have the skill required by that task.
+    Each task may require multiple skills. A penalty of 10 is added
+    for every required skill that the assigned employee does not have.
 
     Args:
         chromosome (list[int]): Employee index assigned to each task.
         employees_data (list[EmployeeData]): Preprocessed employee data
-            containing employee skills and maximum working hours.
+            containing employee skills, proficiency levels, availability,
+            and names.
         tasks_data (list[TaskData]): Preprocessed task data containing
-            required skills, required levels, and task hours.
+            required skills, required proficiency levels, task hours,
+            and priority.
 
     Returns:
-        int: Total skill mismatch cost.
+        int: Total skill mismatch cost across all task assignments.
     """
 
     cost = 0
 
     for task_index, employee_index in enumerate(chromosome):
-        required_skill = tasks_data[task_index]["required_skill"]
 
-        if required_skill not in employees_data[employee_index]:
-            cost += 10
+        for required_skill in tasks_data[task_index]["required_skills"]:
+
+            if required_skill not in employees_data[employee_index]:
+                cost += 50
 
     return cost
 
@@ -44,18 +49,19 @@ def overtime_cost(
     Calculate the overtime cost for a chromosome.
 
     The total task hours assigned to each employee are calculated.
-    Employees whose assigned hours exceed their maximum working hours
-    receive an overtime penalty.
+    A penalty is added when an employee's assigned hours exceed their
+    available working hours.
 
     Args:
         chromosome (list[int]): Employee index assigned to each task.
         employees_data (list[EmployeeData]): Preprocessed employee data
-            containing employee skills and maximum working hours.
+            containing employee skills, proficiency levels, availability,
+            and names.
         tasks_data (list[TaskData]): Preprocessed task data containing
-            task hours and skill requirements.
+            required skills, task hours, and priority.
 
     Returns:
-        int: Total overtime cost.
+        int: Total overtime cost across all employees.
     """
 
     cost = 0
@@ -68,10 +74,10 @@ def overtime_cost(
             hours_map[employee_index] += tasks_data[task_index]["hours"]
 
     for employee_id, hours_assigned in hours_map.items():
-        max_hours = employees_data[employee_id]["max_hours"]
+        available_hours = employees_data[employee_id]["available_hours"]
 
-        if hours_assigned > max_hours:
-            cost += (hours_assigned - max_hours) * 2
+        if hours_assigned > available_hours:
+            cost += (hours_assigned - available_hours) * 2
 
     return cost
 
@@ -94,7 +100,7 @@ def imbalance_cost(
     Args:
         chromosome (list[int]): Employee index assigned to each task.
         tasks_data (list[TaskData]): Preprocessed task data containing
-            task hours and skill requirements.
+            task information and assigned workload hours.
         employees_num (int): Total number of employees.
 
     Returns:
@@ -124,45 +130,111 @@ def proficiency_cost(
     """
     Calculate the proficiency cost for a chromosome.
 
-    Employees with the required skill receive a penalty when their
-    proficiency level differs from the level required by the task.
-    Underqualification receives a larger penalty than overqualification.
+    Each task may require multiple skills. For every required skill
+    possessed by the assigned employee, a penalty is calculated when
+    the employee's proficiency level differs from the required level.
 
-    Employees who do not have the required skill are ignored by this
-    function because they are handled separately by the skill mismatch cost.
+    Underqualification receives a larger penalty than overqualification.
+    Missing skills are ignored because they are handled separately by
+    the skill mismatch cost.
 
     Args:
         chromosome (list[int]): Employee index assigned to each task.
         employees_data (list[EmployeeData]): Preprocessed employee data
             containing employee skills and proficiency levels.
         tasks_data (list[TaskData]): Preprocessed task data containing
-            required skills and required proficiency levels.
+            required skills and their required proficiency levels.
 
     Returns:
-        float: Total proficiency cost.
+        float: Total proficiency cost across all task assignments.
     """
 
     cost = 0.0
 
     for task_id, employee_id in enumerate(chromosome):
 
-        required_skill = tasks_data[task_id]["required_skill"]
+        required_skills = tasks_data[task_id]["required_skills"]
 
-        if required_skill in employees_data[employee_id]:
+        for required_skill in required_skills:
 
-            required_level = tasks_data[task_id]["required_level"]
-            employee_level = employees_data[employee_id][required_skill]
+            if required_skill in employees_data[employee_id]:
 
-            # Underqualification cost
-            if required_level > employee_level:
-                cost += (required_level - employee_level) * 0.5
+                required_level = required_skills[required_skill]
+                employee_level = employees_data[employee_id][required_skill]
 
-            # Overqualification cost
-            elif required_level < employee_level:
-                cost += (employee_level - required_level) * 0.1
+                # Underqualification cost
+                if required_level > employee_level:
+                    cost += (required_level - employee_level) * 0.5
+
+                # Overqualification cost
+                elif required_level < employee_level:
+                    cost += (employee_level - required_level) * 0.1
 
     return cost
 
+
+def priority_cost(
+    chromosome: list[int],
+    tasks_data: list[TaskData],
+    employees_num: int
+) -> float:
+    """
+    Calculate the priority imbalance cost among employees.
+
+    Each task contributes a weighted priority load calculated by
+    multiplying its priority by its working hours. The average priority
+    load is calculated across all employees.
+
+    Employees with a priority load above the average receive a stronger
+    penalty of 0.5 per unit above the average. Employees below the
+    average receive a smaller penalty of 0.1 per unit below the average.
+
+    Employees with no assigned tasks are included with a priority load
+    of zero.
+
+    Args:
+        chromosome (list[int]): Employee index assigned to each task.
+        tasks_data (list[TaskData]): Preprocessed task data containing
+            task hours and priority levels.
+        employees_num (int): Total number of employees.
+
+    Returns:
+        float: Total priority imbalance cost across all employees.
+    """
+
+    total_priority_load = 0
+
+    for task in tasks_data:
+        total_priority_load += task["priority"] * task["hours"]
+
+    avg_priority_load = total_priority_load / employees_num
+
+    employees_priority_load = {
+        employee_id: 0
+        for employee_id in range(employees_num)
+    }
+
+    for task_index, employee_index in enumerate(chromosome):
+        employees_priority_load[employee_index] += (
+            tasks_data[task_index]["priority"]
+            * tasks_data[task_index]["hours"]
+        )
+
+    cost = 0.0
+
+    for employee_priority_load in employees_priority_load.values():
+
+        if employee_priority_load > avg_priority_load:
+            cost += (
+                employee_priority_load - avg_priority_load
+            ) * 0.5
+
+        elif employee_priority_load < avg_priority_load:
+            cost += (
+                avg_priority_load - employee_priority_load
+            ) * 0.1
+
+    return cost
 
 def cost(
     population: list[list[int]],
@@ -220,11 +292,18 @@ def cost(
             tasks_data
         )
 
+        priority_cost_value = priority_cost(
+            chromosome,
+            tasks_data,
+            len(employees_data)
+        )
+
         total_cost = (
             skill_cost
             + overtime_cost_value
             + imbalance_cost_value
             + proficiency_cost_value
+            + priority_cost_value
         )
 
         population_costs.append(total_cost)
@@ -233,7 +312,8 @@ def cost(
             skill_cost,
             overtime_cost_value,
             imbalance_cost_value,
-            proficiency_cost_value
+            proficiency_cost_value,
+            priority_cost_value
         ])
 
     return [population_costs, population_detailed_costs]
