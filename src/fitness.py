@@ -1,7 +1,23 @@
 from src.preprocessing import EmployeeData, TaskData
 from src.config import load_config
 
+
 fitness_config = load_config("fitness.toml")
+
+
+SKILL_MISMATCH_PENALTY = fitness_config["skill"]["mismatch_penalty"]
+
+OVERTIME_PENALTY = fitness_config["overtime"]["penalty"]
+
+IMBALANCE_WEIGHT = fitness_config["workload_imbalance"]["weight"]
+
+UNDERQUALIFICATION_PENALTY = fitness_config["proficiency"]["underqualification_penalty"]
+
+OVERQUALIFICATION_PENALTY = fitness_config["proficiency"]["overqualification_penalty"]
+
+PRIORITY_OVER_AVERAGE_WEIGHT = fitness_config["priority"]["over_average_weight"]
+
+PRIORITY_UNDER_AVERAGE_WEIGHT = fitness_config["priority"]["under_average_weight"]
 
 
 def skill_mismatch_cost(
@@ -35,7 +51,7 @@ def skill_mismatch_cost(
         for required_skill in tasks_data[task_index]["required_skills"]:
 
             if required_skill not in employees_data[employee_index]:
-                cost += fitness_config["skill"]["mismatch_penalty"]
+                cost += SKILL_MISMATCH_PENALTY
 
     return cost
 
@@ -77,7 +93,7 @@ def overtime_cost(
         available_hours = employees_data[employee_id]["available_hours"]
 
         if hours_assigned > available_hours:
-            cost += (hours_assigned - available_hours) * fitness_config["overtime"]["penalty"]
+            cost += (hours_assigned - available_hours) * OVERTIME_PENALTY
 
     return cost
 
@@ -117,7 +133,7 @@ def imbalance_cost(
     cost = 0.0
 
     for hours in hours_map.values():
-        cost += abs(hours - avg_hours) * fitness_config["workload_imbalance"]["weight"]
+        cost += abs(hours - avg_hours) * IMBALANCE_WEIGHT
 
     return cost
 
@@ -166,13 +182,13 @@ def proficiency_cost(
                 if required_level > employee_level:
                     cost += (
                         required_level - employee_level
-                    ) * fitness_config["proficiency"]["underqualification_penalty"]
+                    ) * UNDERQUALIFICATION_PENALTY
 
                 # Overqualification cost
                 elif required_level < employee_level:
                     cost += (
                         employee_level - required_level
-                    ) * fitness_config["proficiency"]["overqualification_penalty"]
+                    ) * OVERQUALIFICATION_PENALTY
 
     return cost
 
@@ -232,13 +248,13 @@ def priority_cost(
         if employee_priority_load > avg_priority_load:
             cost += (
                 employee_priority_load - avg_priority_load
-            ) * fitness_config["priority"]["over_average_weight"]
+            ) * PRIORITY_OVER_AVERAGE_WEIGHT
 
         # under average cost
         elif employee_priority_load < avg_priority_load:
             cost += (
                 avg_priority_load - employee_priority_load
-            ) * fitness_config["priority"]["under_average_weight"]
+            ) * PRIORITY_UNDER_AVERAGE_WEIGHT
 
     return cost
 

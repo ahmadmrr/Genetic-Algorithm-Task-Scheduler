@@ -1,7 +1,6 @@
 from pathlib import Path
-
 import matplotlib.pyplot as plt
-
+from .preprocessing import TaskData, EmployeeData
 
 def _save_plot(save_path: str | None) -> None:
     """
@@ -273,6 +272,198 @@ def plot_all_costs(
     plt.title(title)
 
     plt.grid(alpha=0.3)
+    plt.legend()
+    plt.tight_layout()
+
+    _save_plot(save_path)
+
+    if show:
+        plt.show()
+
+    plt.close()
+
+
+def plot_employee_workload(
+    best_chromosome: list[int],
+    employees_data: list[EmployeeData],
+    tasks_data: list[TaskData],
+    title: str = "Employee Workload",
+    save_path: str | None = None,
+    show: bool = True
+) -> None:
+    """
+    Plot the total assigned working hours for each employee.
+
+    Args:
+        best_chromosome (list[int]): Best employee assignment for each task.
+        employees_data (list[EmployeeData]): Preprocessed employee data.
+        tasks_data (list[TaskData]): Preprocessed task data.
+        title (str): Plot title.
+        save_path (str | None): Optional path used to save the plot.
+        show (bool): Whether to display the plot.
+
+    Returns:
+        None
+    """
+
+    employees_num = len(employees_data)
+
+    workloads = {
+        employee_id: 0
+        for employee_id in range(employees_num)
+    }
+
+    for task_index, employee_index in enumerate(best_chromosome):
+        workloads[employee_index] += tasks_data[task_index]["hours"]
+
+    employee_names = [
+        employees_data[employee_id]["name"]
+        for employee_id in range(employees_num)
+    ]
+
+    assigned_hours = [
+        workloads[employee_id]
+        for employee_id in range(employees_num)
+    ]
+
+    available_hours = [
+        employees_data[employee_id]["available_hours"]
+        for employee_id in range(employees_num)
+    ]
+
+    positions = range(employees_num)
+
+    plt.figure(figsize=(14, 7))
+
+    plt.bar(
+        positions,
+        assigned_hours,
+        label="Assigned Hours"
+    )
+
+    plt.plot(
+        positions,
+        available_hours,
+        marker="o",
+        label="Available Hours"
+    )
+
+    plt.xticks(
+        positions,
+        employee_names,
+        rotation=45,
+        ha="right"
+    )
+
+    plt.xlabel("Employee")
+    plt.ylabel("Hours")
+    plt.title(title)
+
+    plt.grid(
+        axis="y",
+        alpha=0.3
+    )
+
+    plt.legend()
+    plt.tight_layout()
+
+    _save_plot(save_path)
+
+    if show:
+        plt.show()
+
+    plt.close()
+
+
+def plot_employee_priority_load(
+    best_chromosome: list[int],
+    employees_data: list[EmployeeData],
+    tasks_data: list[TaskData],
+    title: str = "Employee Priority Load",
+    save_path: str | None = None,
+    show: bool = True
+) -> None:
+    """
+    Plot the weighted priority load assigned to each employee.
+
+    Priority load is calculated as:
+
+        task priority * task hours
+
+    The average priority load across all employees is also displayed
+    for comparison.
+
+    Args:
+        best_chromosome (list[int]): Best employee assignment for each task.
+        employees_data (list[EmployeeData]): Preprocessed employee data.
+        tasks_data (list[TaskData]): Preprocessed task data.
+        title (str): Plot title.
+        save_path (str | None): Optional path used to save the plot.
+        show (bool): Whether to display the plot.
+
+    Returns:
+        None
+    """
+
+    employees_num = len(employees_data)
+
+    priority_loads = {
+        employee_id: 0
+        for employee_id in range(employees_num)
+    }
+
+    for task_index, employee_index in enumerate(best_chromosome):
+
+        task = tasks_data[task_index]
+
+        priority_loads[employee_index] += (
+            task["priority"] * task["hours"]
+        )
+
+    employee_names = [
+        employees_data[employee_id]["name"]
+        for employee_id in range(employees_num)
+    ]
+
+    loads = [
+        priority_loads[employee_id]
+        for employee_id in range(employees_num)
+    ]
+
+    avg_priority_load = sum(loads) / employees_num
+
+    positions = range(employees_num)
+
+    plt.figure(figsize=(14, 7))
+
+    plt.bar(
+        positions,
+        loads,
+        label="Priority Load"
+    )
+
+    plt.axhline(
+        y=avg_priority_load,
+        linestyle="--",
+        label=f"Average Priority Load ({avg_priority_load:.2f})"
+    )
+
+    plt.xticks(
+        positions,
+        employee_names,
+        rotation=45,
+        ha="right"
+    )
+
+    plt.xlabel("Employee")
+    plt.ylabel("Priority Load")
+    plt.title(title)
+
+    plt.grid(
+        axis="y",
+        alpha=0.3
+    )
+
     plt.legend()
     plt.tight_layout()
 

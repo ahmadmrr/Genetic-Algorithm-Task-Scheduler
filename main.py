@@ -1,7 +1,22 @@
-from src import load_data, genetic_algorithm, preprocess_employees, preprocess_tasks, generate_report, plot_total_cost, plot_cost_components, plot_all_costs
 from time import perf_counter
+
+from src import (
+    load_data,
+    genetic_algorithm,
+    preprocess_employees,
+    preprocess_tasks,
+    generate_report
+)
+
 from src.config import load_config
 
+from src.plotting import (
+    plot_total_cost,
+    plot_cost_components,
+    plot_all_costs,
+    plot_employee_workload,
+    plot_employee_priority_load
+)
 
 ga_config = load_config("genetic_algorithm.toml")
 
@@ -78,9 +93,25 @@ if __name__ == "__main__":
     )
 
     plot_total_cost(
-        generations_best_costs
+        generations_best_costs,
+        save_path="results/plots/total_cost.png"
     )
 
     plot_cost_components(
-        generations_best_costs
+        generations_best_costs,
+        save_path="results/plots/cost_components.png"
+    )
+
+    plot_employee_workload(
+        best_chromosome,
+        employees_data,
+        tasks_data,
+        save_path="results/plots/employee_workload.png"
+    )
+
+    plot_employee_priority_load(
+        best_chromosome,
+        employees_data,
+        tasks_data,
+        save_path="results/plots/employee_priority_load.png"
     )

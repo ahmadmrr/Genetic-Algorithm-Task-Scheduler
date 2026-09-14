@@ -1,5 +1,5 @@
 from pathlib import Path
-from src.fitness import EmployeeData, TaskData
+from .preprocessing import EmployeeData, TaskData
 
 
 def _fit_text(text: str, width: int) -> str:

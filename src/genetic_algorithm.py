@@ -1,8 +1,9 @@
-from src.chromosome import populate
-from src.fitness import cost, EmployeeData, TaskData
-from src.selection import selection
-from src.crossover import crossover
-from src.mutation import mutate_population
+from .chromosome import populate
+from .fitness import cost
+from .selection import selection
+from .crossover import crossover
+from .mutation import mutate_population
+from .preprocessing import EmployeeData, TaskData
 
 
 def genetic_algorithm(
