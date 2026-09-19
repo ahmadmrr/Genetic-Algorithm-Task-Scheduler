@@ -1,9 +1,9 @@
 from .chromosome import populate
-from .fitness import cost
-from .selection import selection
 from .crossover import crossover
+from .fitness import cost
 from .mutation import mutate_population
 from .preprocessing import EmployeeData, TaskData
+from .selection import selection
 
 
 def genetic_algorithm(
@@ -13,12 +13,9 @@ def genetic_algorithm(
     generations: int,
     mutation_rate: int,
     tournament_size: int,
-    crossover_type : str,
-    elite_size: int
-) -> tuple[
-    list[list[int]],
-    list[list[float | list[float] | list[int]]]
-]:
+    crossover_type: str,
+    elite_size: int,
+) -> tuple[list[list[int]], list[list[float | list[float] | list[int]]]]:
     """
     Run the genetic algorithm to optimize task assignments among employees.
 
@@ -52,28 +49,18 @@ def genetic_algorithm(
             imbalance, and proficiency costs.
     """
 
-    population = populate(
-        population_size,
-        len(tasks_data),
-        len(employees_data)
-    )
+    population = populate(population_size, len(tasks_data), len(employees_data))
 
     generations_best_costs = []
 
     for generation in range(generations):
-        costs = cost(
-            population,
-            employees_data,
-            tasks_data
-        )
+        costs = cost(population, employees_data, tasks_data)
 
         best_index = costs[0].index(min(costs[0]))
 
-        generations_best_costs.append([
-            costs[0][best_index],
-            costs[1][best_index],
-            population[best_index].copy()
-        ])
+        generations_best_costs.append(
+            [costs[0][best_index], costs[1][best_index], population[best_index].copy()]
+        )
 
         indices = list(range(len(costs[0])))
         indices.sort(key=lambda i: costs[0][i])
@@ -81,28 +68,18 @@ def genetic_algorithm(
         elite_indices = indices[:elite_size]
 
         parent_indices = selection(
-            costs[0],
-            population_size - elite_size,
-            tournament_size
+            costs[0], population_size - elite_size, tournament_size
         )
 
-        parents = [
-            population[i]
-            for i in parent_indices
-        ]
+        parents = [population[i] for i in parent_indices]
 
         new_population = crossover(parents, crossover_type)
 
         new_population = mutate_population(
-            new_population,
-            mutation_rate,
-            len(employees_data)
+            new_population, mutation_rate, len(employees_data)
         )
 
-        new_population += [
-            population[i].copy()
-            for i in elite_indices
-        ]
+        new_population += [population[i].copy() for i in elite_indices]
 
         population = new_population
 

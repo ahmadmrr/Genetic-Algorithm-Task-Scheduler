@@ -1,8 +1,7 @@
 from numpy.random import choice
 
 
-def tournament_selection(costs : list[float], tournament_size : int) -> int:
-
+def tournament_selection(costs: list[float], tournament_size: int) -> int:
     """
     Selects a chromosome index using tournament selection.
 
@@ -24,8 +23,9 @@ def tournament_selection(costs : list[float], tournament_size : int) -> int:
     return choices[chosen_costs.index(min(chosen_costs))]
 
 
-def selection(costs : list[float], selection_size : int, tournament_size : int) -> list[int]:
-
+def selection(
+    costs: list[float], selection_size: int, tournament_size: int
+) -> list[int]:
     """
     Selects multiple chromosome indices using tournament selection.
 
@@ -39,5 +39,3 @@ def selection(costs : list[float], selection_size : int, tournament_size : int) 
     """
 
     return [tournament_selection(costs, tournament_size) for _ in range(selection_size)]
-
-

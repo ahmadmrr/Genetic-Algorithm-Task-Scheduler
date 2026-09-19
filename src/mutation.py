@@ -1,8 +1,9 @@
 from numpy.random import randint, random
 
 
-def mutate(chromosome : list[int], mutation_rate: int, employees_number: int) -> list[int]:
-
+def mutate(
+    chromosome: list[int], mutation_rate: int, employees_number: int
+) -> list[int]:
     """
     Mutates a chromosome by randomly changing employee assignments.
 
@@ -19,11 +20,9 @@ def mutate(chromosome : list[int], mutation_rate: int, employees_number: int) ->
     """
 
     for i in range(len(chromosome)):
-
         probability = random()
 
-        if probability < (mutation_rate/100):
-
+        if probability < (mutation_rate / 100):
             new_employee = randint(0, employees_number)
 
             # Prevent mutation from selecting the same employee
@@ -35,8 +34,9 @@ def mutate(chromosome : list[int], mutation_rate: int, employees_number: int) ->
     return chromosome
 
 
-def mutate_population(population: list[list[int]], mutation_rate: int, employees_number: int) -> list[list[int]]:
-
+def mutate_population(
+    population: list[list[int]], mutation_rate: int, employees_number: int
+) -> list[list[int]]:
     """
     Applies mutation to every chromosome in the population.
 

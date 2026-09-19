@@ -10,20 +10,15 @@ def chromosome(num_tasks: int, num_employees: int) -> list[int]:
         num_employees (int): Number of available employees.
 
     Returns:
-        list[int]: Employee indices assigned to each task, 
+        list[int]: Employee indices assigned to each task,
         ranging from 0 to num_employees - 1.
     """
 
-    return [
-        random.randrange(num_employees)
-        for _ in range(num_tasks)
-    ]
+    return [random.randrange(num_employees) for _ in range(num_tasks)]
 
 
 def populate(
-    population_size: int,
-    num_tasks: int,
-    num_employees: int
+    population_size: int, num_tasks: int, num_employees: int
 ) -> list[list[int]]:
     """
     Generates an initial population of random chromosomes.
@@ -37,7 +32,4 @@ def populate(
         list[list[int]]: The generated population.
     """
 
-    return [
-        chromosome(num_tasks, num_employees)
-        for _ in range(population_size)
-    ]
+    return [chromosome(num_tasks, num_employees) for _ in range(population_size)]

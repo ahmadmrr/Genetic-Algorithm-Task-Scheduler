@@ -1,6 +1,5 @@
-from src.preprocessing import EmployeeData, TaskData
 from src.config import load_config
-
+from src.preprocessing import EmployeeData, TaskData
 
 fitness_config = load_config("fitness.toml")
 
@@ -23,7 +22,7 @@ PRIORITY_UNDER_AVERAGE_WEIGHT = fitness_config["priority"]["under_average_weight
 def skill_mismatch_cost(
     chromosome: list[int],
     employees_data: list[EmployeeData],
-    tasks_data: list[TaskData]
+    tasks_data: list[TaskData],
 ) -> int:
     """
     Calculate the skill mismatch cost for a chromosome.
@@ -47,9 +46,7 @@ def skill_mismatch_cost(
     cost = 0
 
     for task_index, employee_index in enumerate(chromosome):
-
         for required_skill in tasks_data[task_index]["required_skills"]:
-
             if required_skill not in employees_data[employee_index]:
                 cost += SKILL_MISMATCH_PENALTY
 
@@ -59,7 +56,7 @@ def skill_mismatch_cost(
 def overtime_cost(
     chromosome: list[int],
     employees_data: list[EmployeeData],
-    tasks_data: list[TaskData]
+    tasks_data: list[TaskData],
 ) -> int:
     """
     Calculate the overtime cost for a chromosome.
@@ -99,9 +96,7 @@ def overtime_cost(
 
 
 def imbalance_cost(
-    chromosome: list[int],
-    tasks_data: list[TaskData],
-    employees_num: int
+    chromosome: list[int], tasks_data: list[TaskData], employees_num: int
 ) -> float:
     """
     Calculate the workload imbalance cost among employees.
@@ -141,7 +136,7 @@ def imbalance_cost(
 def proficiency_cost(
     chromosome: list[int],
     employees_data: list[EmployeeData],
-    tasks_data: list[TaskData]
+    tasks_data: list[TaskData],
 ) -> float:
     """
     Calculate the proficiency cost for a chromosome.
@@ -168,13 +163,10 @@ def proficiency_cost(
     cost = 0.0
 
     for task_id, employee_id in enumerate(chromosome):
-
         required_skills = tasks_data[task_id]["required_skills"]
 
         for required_skill in required_skills:
-
             if required_skill in employees_data[employee_id]:
-
                 required_level = required_skills[required_skill]
                 employee_level = employees_data[employee_id][required_skill]
 
@@ -194,9 +186,7 @@ def proficiency_cost(
 
 
 def priority_cost(
-    chromosome: list[int],
-    tasks_data: list[TaskData],
-    employees_num: int
+    chromosome: list[int], tasks_data: list[TaskData], employees_num: int
 ) -> float:
     """
     Calculate the priority imbalance cost among employees.
@@ -229,21 +219,16 @@ def priority_cost(
 
     avg_priority_load = total_priority_load / employees_num
 
-    employees_priority_load = {
-        employee_id: 0
-        for employee_id in range(employees_num)
-    }
+    employees_priority_load = {employee_id: 0 for employee_id in range(employees_num)}
 
     for task_index, employee_index in enumerate(chromosome):
         employees_priority_load[employee_index] += (
-            tasks_data[task_index]["priority"]
-            * tasks_data[task_index]["hours"]
+            tasks_data[task_index]["priority"] * tasks_data[task_index]["hours"]
         )
 
     cost = 0.0
 
     for employee_priority_load in employees_priority_load.values():
-
         # over average cost
         if employee_priority_load > avg_priority_load:
             cost += (
@@ -258,10 +243,11 @@ def priority_cost(
 
     return cost
 
+
 def cost(
     population: list[list[int]],
     employees_data: list[EmployeeData],
-    tasks_data: list[TaskData]
+    tasks_data: list[TaskData],
 ) -> list[list[float] | list[list[float]]]:
     """
     Calculate the costs for all chromosomes in a population.
@@ -290,35 +276,19 @@ def cost(
     population_detailed_costs = []
 
     for chromosome in population:
-        skill_cost = skill_mismatch_cost(
-            chromosome,
-            employees_data,
-            tasks_data
-        )
+        skill_cost = skill_mismatch_cost(chromosome, employees_data, tasks_data)
 
-        overtime_cost_value = overtime_cost(
-            chromosome,
-            employees_data,
-            tasks_data
-        )
+        overtime_cost_value = overtime_cost(chromosome, employees_data, tasks_data)
 
         imbalance_cost_value = imbalance_cost(
-            chromosome,
-            tasks_data,
-            len(employees_data)
+            chromosome, tasks_data, len(employees_data)
         )
 
         proficiency_cost_value = proficiency_cost(
-            chromosome,
-            employees_data,
-            tasks_data
+            chromosome, employees_data, tasks_data
         )
 
-        priority_cost_value = priority_cost(
-            chromosome,
-            tasks_data,
-            len(employees_data)
-        )
+        priority_cost_value = priority_cost(chromosome, tasks_data, len(employees_data))
 
         total_cost = (
             skill_cost
@@ -330,12 +300,14 @@ def cost(
 
         population_costs.append(total_cost)
 
-        population_detailed_costs.append([
-            skill_cost,
-            overtime_cost_value,
-            imbalance_cost_value,
-            proficiency_cost_value,
-            priority_cost_value
-        ])
+        population_detailed_costs.append(
+            [
+                skill_cost,
+                overtime_cost_value,
+                imbalance_cost_value,
+                proficiency_cost_value,
+                priority_cost_value,
+            ]
+        )
 
     return [population_costs, population_detailed_costs]

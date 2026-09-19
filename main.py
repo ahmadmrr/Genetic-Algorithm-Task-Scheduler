@@ -1,21 +1,18 @@
 from time import perf_counter
 
 from src import (
-    load_data,
+    generate_report,
     genetic_algorithm,
+    load_data,
     preprocess_employees,
     preprocess_tasks,
-    generate_report
 )
-
 from src.config import load_config
-
 from src.plotting import (
-    plot_total_cost,
     plot_cost_components,
-    plot_all_costs,
+    plot_employee_priority_load,
     plot_employee_workload,
-    plot_employee_priority_load
+    plot_total_cost,
 )
 
 ga_config = load_config("genetic_algorithm.toml")
@@ -31,8 +28,6 @@ crossover_type = ga_config["crossover_type"]
 
 
 if __name__ == "__main__":
-
-
     # Load employee and task datasets
     employees = load_data("data/employees.csv")
     tasks = load_data("data/tasks.csv")
@@ -40,7 +35,6 @@ if __name__ == "__main__":
     # Data Preprocessing
     employees_data = preprocess_employees(employees)
     tasks_data = preprocess_tasks(tasks)
-    
 
     start = perf_counter()
 
@@ -53,7 +47,7 @@ if __name__ == "__main__":
         mutation_rate,
         tournament_size,
         crossover_type,
-        elite_size
+        elite_size,
     )
 
     end = perf_counter()
@@ -62,8 +56,7 @@ if __name__ == "__main__":
 
     # Find the generation with the lowest total cost
     best_generation = min(
-        range(len(generations_best_costs)),
-        key=lambda i: generations_best_costs[i][0]
+        range(len(generations_best_costs)), key=lambda i: generations_best_costs[i][0]
     )
 
     best_result = generations_best_costs[best_generation]
@@ -73,11 +66,7 @@ if __name__ == "__main__":
     best_chromosome = best_result[2]
 
     generate_report(
-        best_chromosome,
-        employees_data,
-        tasks_data,
-        best_cost,
-        detailed_costs
+        best_chromosome, employees_data, tasks_data, best_cost, detailed_costs
     )
 
     print(
@@ -92,26 +81,22 @@ if __name__ == "__main__":
         f"{'-' * 30}"
     )
 
-    plot_total_cost(
-        generations_best_costs,
-        save_path="results/plots/total_cost.png"
-    )
+    plot_total_cost(generations_best_costs, save_path="results/plots/total_cost.png")
 
     plot_cost_components(
-        generations_best_costs,
-        save_path="results/plots/cost_components.png"
+        generations_best_costs, save_path="results/plots/cost_components.png"
     )
 
     plot_employee_workload(
         best_chromosome,
         employees_data,
         tasks_data,
-        save_path="results/plots/employee_workload.png"
+        save_path="results/plots/employee_workload.png",
     )
 
     plot_employee_priority_load(
         best_chromosome,
         employees_data,
         tasks_data,
-        save_path="results/plots/employee_priority_load.png"
+        save_path="results/plots/employee_priority_load.png",
     )

@@ -1,9 +1,8 @@
-from numpy.random import randint, choice
+from numpy.random import choice, randint
 
 
 def one_point_crossover(
-    parent1: list[int],
-    parent2: list[int]
+    parent1: list[int], parent2: list[int]
 ) -> tuple[list[int], list[int]]:
     """
     Perform one-point crossover between two parent chromosomes.
@@ -34,8 +33,7 @@ def one_point_crossover(
 
 
 def two_points_crossover(
-    parent1: list[int],
-    parent2: list[int]
+    parent1: list[int], parent2: list[int]
 ) -> tuple[list[int], list[int]]:
     """
     Perform two-point crossover between two parent chromosomes.
@@ -68,8 +66,7 @@ def two_points_crossover(
 
 
 def uniform_crossover(
-    parent1: list[int],
-    parent2: list[int]
+    parent1: list[int], parent2: list[int]
 ) -> tuple[list[int], list[int]]:
     """
     Perform uniform crossover between two parent chromosomes.
@@ -96,16 +93,13 @@ def uniform_crossover(
         if gene_mask == 1:
             child1[gene_index], child2[gene_index] = (
                 child2[gene_index],
-                child1[gene_index]
+                child1[gene_index],
             )
 
     return child1, child2
 
 
-def crossover(
-    population: list[list[int]],
-    crossover_type: str
-) -> list[list[int]]:
+def crossover(population: list[list[int]], crossover_type: str) -> list[list[int]]:
     """
     Perform the selected crossover operation on a population.
 
@@ -133,31 +127,23 @@ def crossover(
     operators = {
         "one_point": one_point_crossover,
         "two_points": two_points_crossover,
-        "uniform": uniform_crossover
+        "uniform": uniform_crossover,
     }
 
     if crossover_type not in operators:
-        raise ValueError(
-            f"Unsupported crossover operator: {crossover_type}"
-        )
+        raise ValueError(f"Unsupported crossover operator: {crossover_type}")
 
     operator = operators[crossover_type]
 
     new_population = []
 
     for i in range(0, len(population) - 1, 2):
-
-        child1, child2 = operator(
-            population[i],
-            population[i + 1]
-        )
+        child1, child2 = operator(population[i], population[i + 1])
 
         new_population.append(child1)
         new_population.append(child2)
 
     if len(population) % 2 != 0:
-        new_population.append(
-            population[-1].copy()
-        )
+        new_population.append(population[-1].copy())
 
     return new_population

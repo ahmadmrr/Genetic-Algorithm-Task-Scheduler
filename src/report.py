@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from .preprocessing import EmployeeData, TaskData
 
 
@@ -11,7 +12,7 @@ def _fit_text(text: str, width: int) -> str:
     if len(text) <= width:
         return text
 
-    return text[:width - 3] + "..."
+    return text[: width - 3] + "..."
 
 
 def generate_report(
@@ -20,7 +21,7 @@ def generate_report(
     tasks_data: list[TaskData],
     best_cost: float,
     detailed_costs: list[float],
-    output_path: str = "results/schedule_summary.txt"
+    output_path: str = "results/schedule_summary.txt",
 ) -> None:
     """
     Generate a text report for the best schedule found by the genetic algorithm.
@@ -53,10 +54,7 @@ def generate_report(
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
     workloads = {
-        employee_id: {
-            "hours": 0,
-            "tasks": 0
-        }
+        employee_id: {"hours": 0, "tasks": 0}
         for employee_id in range(len(employees_data))
     }
 
@@ -65,34 +63,19 @@ def generate_report(
         workloads[employee_id]["tasks"] += 1
 
     with output_file.open("w", encoding="utf-8") as file:
-
         # =========================
         # Cost Summary
         # =========================
 
-        file.write(
-            "GENETIC ALGORITHM SCHEDULER - BEST SOLUTION\n"
-        )
+        file.write("GENETIC ALGORITHM SCHEDULER - BEST SOLUTION\n")
         file.write("=" * 120 + "\n\n")
 
-        file.write(
-            f"Total Cost:              {best_cost:.2f}\n"
-        )
-        file.write(
-            f"Skill Mismatch Cost:     {detailed_costs[0]:.2f}\n"
-        )
-        file.write(
-            f"Overtime Cost:           {detailed_costs[1]:.2f}\n"
-        )
-        file.write(
-            f"Imbalance Cost:          {detailed_costs[2]:.2f}\n"
-        )
-        file.write(
-            f"Proficiency Cost:        {detailed_costs[3]:.2f}\n"
-        )
-        file.write(
-            f"Priority Imbalance Cost: {detailed_costs[4]:.2f}\n"
-        )
+        file.write(f"Total Cost:              {best_cost:.2f}\n")
+        file.write(f"Skill Mismatch Cost:     {detailed_costs[0]:.2f}\n")
+        file.write(f"Overtime Cost:           {detailed_costs[1]:.2f}\n")
+        file.write(f"Imbalance Cost:          {detailed_costs[2]:.2f}\n")
+        file.write(f"Proficiency Cost:        {detailed_costs[3]:.2f}\n")
+        file.write(f"Priority Imbalance Cost: {detailed_costs[4]:.2f}\n")
 
         # =========================
         # Employee Workload Summary
@@ -113,19 +96,13 @@ def generate_report(
         file.write("-" * 90 + "\n")
 
         for employee_id, employee in enumerate(employees_data):
-
-            name = _fit_text(
-                str(employee["name"]),
-                18
-            )
+            name = _fit_text(str(employee["name"]), 18)
 
             available_hours = employee["available_hours"]
             assigned_hours = workloads[employee_id]["hours"]
             assigned_tasks = workloads[employee_id]["tasks"]
 
-            remaining_hours = (
-                available_hours - assigned_hours
-            )
+            remaining_hours = available_hours - assigned_hours
 
             file.write(
                 f"{employee_id:<6}"
@@ -174,42 +151,31 @@ def generate_report(
         file.write("-" * table_width + "\n")
 
         for task_index, employee_index in enumerate(best_chromosome):
-
             task = tasks_data[task_index]
             employee = employees_data[employee_index]
 
             task_id = str(task["task_id"])
 
-            task_name = _fit_text(
-                str(task["task"]),
-                task_width - 2
-            )
+            task_name = _fit_text(str(task["task"]), task_width - 2)
 
-            employee_name = _fit_text(
-                str(employee["name"]),
-                employee_width - 2
-            )
+            employee_name = _fit_text(str(employee["name"]), employee_width - 2)
 
             required_skills = task["required_skills"]
 
             required_skills_text = ", ".join(
-                f"{skill}:{level}"
-                for skill, level in required_skills.items()
+                f"{skill}:{level}" for skill, level in required_skills.items()
             )
 
             employee_levels_text = ", ".join(
-                f"{skill}:{employee.get(skill, '-')}"
-                for skill in required_skills
+                f"{skill}:{employee.get(skill, '-')}" for skill in required_skills
             )
 
             required_skills_text = _fit_text(
-                required_skills_text,
-                required_skills_width - 2
+                required_skills_text, required_skills_width - 2
             )
 
             employee_levels_text = _fit_text(
-                employee_levels_text,
-                employee_levels_width - 2
+                employee_levels_text, employee_levels_width - 2
             )
 
             hours = task["hours"]

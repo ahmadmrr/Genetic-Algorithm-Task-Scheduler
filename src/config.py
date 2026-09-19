@@ -1,6 +1,5 @@
-from pathlib import Path
 import tomllib
-
+from pathlib import Path
 
 CONFIG_DIR = Path(__file__).parent.parent / "config"
 

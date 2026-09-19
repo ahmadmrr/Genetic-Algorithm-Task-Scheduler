@@ -1,13 +1,10 @@
 from pandas import DataFrame
 
-
 EmployeeData = dict[str, int | str]
 TaskData = dict[str, int | str | dict[str, int]]
 
 
-def preprocess_employees(
-    employees: DataFrame
-) -> list[EmployeeData]:
+def preprocess_employees(employees: DataFrame) -> list[EmployeeData]:
     """
     Convert employee data from a DataFrame into GA-friendly dictionaries.
 
@@ -32,9 +29,7 @@ def preprocess_employees(
             skill_name, level = skill.strip().split(":")
             data[skill_name] = int(level)
 
-        data["available_hours"] = int(
-            employees.loc[employee_id, "available_hours"]
-        )
+        data["available_hours"] = int(employees.loc[employee_id, "available_hours"])
         data["name"] = employees.loc[employee_id, "name"]
 
         employees_data.append(data)
@@ -42,9 +37,7 @@ def preprocess_employees(
     return employees_data
 
 
-def preprocess_tasks(
-    tasks: DataFrame
-) -> list[TaskData]:
+def preprocess_tasks(tasks: DataFrame) -> list[TaskData]:
     """
     Convert task data from a DataFrame into GA-friendly dictionaries.
 
@@ -73,7 +66,7 @@ def preprocess_tasks(
             "task": tasks.loc[task_id, "task"],
             "required_skills": task_skills,
             "hours": int(tasks.loc[task_id, "hours"]),
-            "priority": int(tasks.loc[task_id, "priority"])
+            "priority": int(tasks.loc[task_id, "priority"]),
         }
 
         tasks_data.append(data)
