@@ -1,0 +1,121 @@
+GENETIC ALGORITHM SCHEDULER - BEST SOLUTION
+========================================================================================================================
+
+Total Cost:              81.10
+Skill Mismatch Cost:     0.00
+Overtime Cost:           0.00
+Imbalance Cost:          17.60
+Proficiency Cost:        27.20
+Priority Imbalance Cost: 36.30
+
+
+EMPLOYEE WORKLOAD SUMMARY
+==========================================================================================
+ID    Employee            Tasks     Workload    Available   Remaining   
+------------------------------------------------------------------------------------------
+0     Ahmad               2         12          16          4           
+1     Sara                2         10          14          4           
+2     Omar                2         12          16          4           
+3     Lina                2         12          14          2           
+4     Adam                2         12          12          0           
+5     Noor                3         16          16          0           
+6     Yazan               2         10          16          6           
+7     Maya                3         12          14          2           
+8     Samer               3         12          12          0           
+9     Dana                2         9           14          5           
+10    Khaled              2         10          16          6           
+11    Rana                3         11          14          3           
+12    Zaid                2         10          16          6           
+13    Hala                2         10          12          2           
+14    Laith               3         11          14          3           
+15    Nour                2         9           16          7           
+16    Tariq               2         10          14          4           
+17    Reem                3         11          12          1           
+18    Ali                 2         9           16          7           
+19    Mariam              3         12          14          2           
+20    Fares               2         11          16          5           
+21    Salma               2         10          14          4           
+22    Hassan              3         12          12          0           
+23    Leen                2         11          16          5           
+24    Bilal               3         13          14          1           
+25    Jana                2         9           12          3           
+26    Malik               2         10          16          6           
+27    Farah               3         12          14          2           
+28    Anas                2         9           16          7           
+29    Layla               2         10          12          2           
+
+
+TASK ASSIGNMENT SUMMARY
+==================================================================================================================================================
+Task ID   Task                            Employee          Required Skills                   Employee Levels                   Hours   Priority  
+--------------------------------------------------------------------------------------------------------------------------------------------------
+T01       Train classification model      Noor              AI:8, Python:7                    AI:9, Python:9                    5       3         
+T02       Clean customer dataset          Laith             Python:6                          Python:8                          3       2         
+T03       Perform security audit          Jana              Security:8, Linux:6               Security:9, Linux:9               5       4         
+T04       Optimize database queries       Maya              Database:8, Python:5              Database:8, Python:9              4       3         
+T05       Build authentication API        Dana              Backend:8, Security:7             Backend:8, Security:8             5       4         
+T06       Configure Linux server          Salma             Linux:7, Security:5               Linux:8, Security:8               4       3         
+T07       Create automation script        Rana              Python:7, Linux:5                 Python:8, Linux:9                 3       2         
+T08       Train recommendation model      Adam              AI:9, Python:8                    AI:8, Python:8                    6       3         
+T09       Design database schema          Yazan             Database:8, Backend:6             Database:9, Backend:9             5       3         
+T10       Run vulnerability assessment    Ali               Security:9, Linux:7               Security:8, Linux:9               5       4         
+T11       Fix backend API bugs            Laith             Backend:6, Python:5               Backend:9, Python:8               3       3         
+T12       Configure Linux services        Rana              Linux:7                           Linux:9                           3       2         
+T13       Build data preprocessing pi...  Tariq             Python:8, Database:6              Python:9, Database:9              5       3         
+T14       Evaluate machine learning m...  Hassan            AI:7, Python:6                    AI:9, Python:9                    3       2         
+T15       Optimize database indexes       Samer             Database:7                        Database:8                        4       2         
+T16       Develop REST API                Malik             Backend:8, Python:6               Backend:9, Python:9               5       3         
+T17       Review security logs            Mariam            Security:6, Linux:5               Security:9, Linux:8               3       3         
+T18       Generate automated reports      Maya              Python:6, Database:5              Python:9, Database:8              3       1         
+T19       Configure server monitoring     Mariam            Linux:8, Security:6               Linux:8, Security:9               4       3         
+T20       Test AI feature prototype       Hassan            AI:6, Python:5                    AI:9, Python:9                    4       2         
+T21       Implement database backup s...  Reem              Database:7, Linux:6               Database:8, Linux:9               4       4         
+T22       Perform penetration testing     Salma             Security:9, Linux:7, Python:5     Security:8, Linux:8, Python:9     6       4         
+T23       Build user management API       Bilal             Backend:7, Database:6             Backend:9, Database:8             4       3         
+T24       Write data migration script     Farah             Python:8, Database:7              Python:8, Database:9              4       3         
+T25       Deploy Linux application se...  Khaled            Linux:9, Backend:6                Linux:8, Backend:9                5       4         
+T26       Develop anomaly detection m...  Sara              AI:8, Python:8                    AI:8, Python:8                    5       3         
+T27       Configure database replication  Anas              Database:9, Linux:7               Database:8, Linux:9               5       4         
+T28       Review authentication security  Samer             Security:8, Backend:6             Security:9, Backend:9             4       4         
+T29       Optimize backend performance    Malik             Backend:9, Python:7               Backend:9, Python:9               5       3         
+T30       Build ETL automation script     Tariq             Python:9, Database:7              Python:9, Database:9              5       3         
+T31       Configure Linux firewall        Ali               Linux:8, Security:8               Linux:9, Security:8               4       4         
+T32       Tune machine learning model     Leen              AI:9, Python:8                    AI:9, Python:9                    5       3         
+T33       Analyze database performance    Reem              Database:7, Python:5              Database:8, Python:8              3       2         
+T34       Investigate security incident   Fares             Security:9, Linux:6               Security:9, Linux:9               5       4         
+T35       Implement caching service       Bilal             Backend:8, Database:6             Backend:9, Database:8             4       2         
+T36       Process application logs        Farah             Python:6, Linux:5                 Python:8, Linux:8                 3       2         
+T37       Automate Linux maintenance      Reem              Linux:7, Python:6                 Linux:9, Python:8                 4       2         
+T38       Build prediction model          Noor              AI:8, Python:7                    AI:9, Python:9                    5       3         
+T39       Create database migration plan  Samer             Database:8, Backend:5             Database:8, Backend:9             4       2         
+T40       Implement API rate limiting     Jana              Backend:7, Security:6             Backend:8, Security:9             4       4         
+T41       Build fraud detection model     Leen              AI:9, Python:8, Database:6        AI:9, Python:9, Database:8        6       4         
+T42       Develop secure file upload API  Nour              Backend:8, Security:8, Python:6   Backend:8, Security:8, Python:9   5       4         
+T43       Analyze application vulnera...  Nour              Security:8, Python:6              Security:8, Python:9              4       4         
+T44       Configure container host        Zaid              Linux:8, Security:6, Backend:5    Linux:9, Security:8, Backend:9    4       3         
+T45       Build customer analytics pi...  Lina              Python:8, Database:8, AI:6        Python:9, Database:8, AI:8        6       3         
+T46       Optimize model inference se...  Hassan            AI:8, Backend:7, Python:7         AI:9, Backend:9, Python:9         5       3         
+T47       Implement database access l...  Maya              Database:8, Backend:8, Python:5   Database:8, Backend:8, Python:9   5       3         
+T48       Secure database connections     Dana              Security:7, Database:7, Backe...  Security:8, Database:9, Backe...  4       4         
+T49       Automate server deployment      Khaled            Linux:8, Python:7, Backend:6      Linux:8, Python:9, Backend:9      5       3         
+T50       Develop threat detection sy...  Adam              Security:9, AI:7, Python:7        Security:9, AI:8, Python:8        6       4         
+T51       Build model monitoring service  Sara              AI:7, Backend:7, Python:6         AI:8, Backend:9, Python:8         5       3         
+T52       Perform database security r...  Anas              Database:7, Security:8            Database:8, Security:9            4       4         
+T53       Create log analysis pipeline    Layla             Python:8, Linux:6, Security:6     Python:9, Linux:9, Security:8     5       3         
+T54       Implement backend load bala...  Hala              Backend:8, Linux:7                Backend:8, Linux:8                5       3         
+T55       Train image classification ...  Noor              AI:9, Python:9                    AI:9, Python:9                    6       3         
+T56       Configure intrusion detecti...  Hala              Security:9, Linux:8               Security:9, Linux:8               5       4         
+T57       Develop database reporting API  Yazan             Database:8, Backend:7, Python:6   Database:9, Backend:9, Python:8   5       2         
+T58       Build automated security sc...  Fares             Security:8, Python:8, Linux:6     Security:9, Python:8, Linux:9     6       4         
+T59       Deploy machine learning ser...  Ahmad             AI:8, Backend:8, Python:6         AI:9, Backend:8, Python:9         6       4         
+T60       Build secure analytics plat...  Omar              Database:8, AI:7, Python:6        Database:9, AI:9, Python:8        7       4         
+T61       Build incident response das...  Bilal             Security:7, Backend:7, Databa...  Security:8, Backend:9, Databa...  5       3         
+T62       Create AI data validation s...  Omar              AI:7, Python:8, Database:6        AI:9, Python:8, Database:9        5       3         
+T63       Automate database maintenance   Farah             Database:8, Python:7, Linux:6     Database:9, Python:8, Linux:8     5       2         
+T64       Develop secure backend gateway  Zaid              Backend:9, Security:8, Linux:5    Backend:9, Security:8, Linux:9    6       4         
+T65       Analyze network security logs   Layla             Security:8, Linux:7, Python:6     Security:8, Linux:9, Python:9     5       4         
+T66       Build AI inference API          Ahmad             AI:8, Backend:8, Python:7         AI:9, Backend:8, Python:9         6       3         
+T67       Configure production databa...  Mariam            Database:8, Linux:8, Security:5   Database:8, Linux:8, Security:9   5       4         
+T68       Create automated deployment...  Rana              Python:8, Linux:8, Backend:6      Python:8, Linux:9, Backend:8      5       3         
+T69       Build risk prediction system    Lina              AI:8, Python:8, Database:6        AI:8, Python:9, Database:8        6       3         
+T70       Develop security monitoring...  Laith             Security:8, Backend:7, Python:6   Security:9, Backend:9, Python:8   5       4         
