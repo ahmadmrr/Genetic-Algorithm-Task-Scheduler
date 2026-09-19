@@ -1,0 +1,53 @@
+# Experiment Configuration
+# ------------------------
+# This file supports two experiment modes:
+#
+# 1. Parameter Comparison
+#    Provide a list of values for ONE parameter.
+#
+#    Example:
+#    mutation_rate = [1, 3, 5, 10]
+#
+#    Each value will be tested for the specified number of runs.
+#
+# 2. Configuration Test
+#    Use scalar values for all parameters.
+#
+#    Example:
+#    mutation_rate = 3
+#    tournament_size = 9
+#    crossover_type = "uniform"
+#
+#    The complete configuration will be tested repeatedly.
+#
+# Only one parameter can be a list at a time.
+#
+# Recommended runs:
+# 2  = testing/debugging
+# 30 = final experiment
+
+
+# Number of runs for each tested value or configuration
+runs = 30
+
+
+# GA Parameters
+
+# Population size
+population_size = 200
+
+# Number of generations
+generations = 500
+
+# Tournament selection size
+tournament_size = 9
+
+# Mutation rate (%)
+mutation_rate = 3
+
+# Number of preserved elite chromosomes
+elite_size = 4
+
+# Crossover operator
+# Options: "one_point", "two_points", "uniform"
+crossover_type = "uniform"

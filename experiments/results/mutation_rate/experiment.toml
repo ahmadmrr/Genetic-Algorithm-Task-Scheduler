@@ -1,0 +1,36 @@
+# Experiment Configuration
+# ------------------------
+# To test a parameter, provide a list of values.
+# Exactly ONE parameter should be a list at a time.
+#
+# Example:
+# mutation_rate = [1, 3, 5, 10]
+#
+# Recommended runs:
+# 2  = testing/debugging
+# 30 = final experiment
+
+
+# Number of runs for each tested value
+runs = 30
+
+
+# GA Parameters
+
+# Population size
+population_size = 200
+
+# Number of generations
+generations = 500
+
+# Tournament selection size
+tournament_size = 7
+
+# Mutation rate (%)
+mutation_rate = [1, 3, 5, 10]
+
+# Number of preserved elite chromosomes
+elite_size = 4
+
+# Options: "one_point", "two_points", "uniform"
+crossover_type = "uniform"
